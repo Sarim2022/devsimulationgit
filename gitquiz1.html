@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clone to First Commit | DEV GAME SIMULATION</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050505;
+      --card: #0c0c0c;
+      --card-2: #101010;
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.14);
+      --text: #f5f5f5;
+      --muted: #9ca3af;
+      --accent: #e5e7eb;
+      --green: #22c55e;
+      --red: #ef4444;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 18px 14px 30px;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      background: #0a0a0a;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      transition: 0.2s ease;
+    }
+
+    .back-btn:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    .tag {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.72rem;
+      color: #d1d5db;
+      border: 1px solid var(--border);
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #0a0a0a;
+    }
+
+    .hero {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #0b0b0b, #080808);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1 {
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .app {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #0b0b0b, #070707);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .progress-wrap {
+      margin-bottom: 14px;
+    }
+
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #111;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 8%;
+      background: linear-gradient(90deg, rgba(255,255,255,0.45), rgba(255,255,255,0.18));
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .terminal {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      background: #080808;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 14px;
+      color: #d1d5db;
+      min-height: 60px;
+      white-space: pre-line;
+    }
+
+    .scene {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .scene-id {
+      display: inline-block;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.68rem;
+      color: #d1d5db;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #0a0a0a;
+      border-radius: 999px;
+      padding: 5px 8px;
+      margin-bottom: 10px;
+    }
+
+    .scene-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      line-height: 1.45;
+      margin-bottom: 8px;
+    }
+
+    .scene-sub {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .option-btn {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #111, #0d0d0d);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.18s ease;
+      font-family: inherit;
+    }
+
+    .option-btn:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+      background: #131313;
+    }
+
+    .option-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .option-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .complete {
+      display: none;
+      border: 1px solid rgba(34,197,94,0.2);
+      background: rgba(34,197,94,0.05);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .complete.show {
+      display: block;
+    }
+
+    .complete h2 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .complete p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .code {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.8rem;
+      background: #0a0a0a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      color: #e5e7eb;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .restart-btn {
+      border: 1px solid var(--border);
+      background: #111;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .restart-btn:hover {
+      border-color: var(--border-strong);
+    }
+
+    .score-wrap {
+      margin-bottom: 16px;
+    }
+
+    .score-value {
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: #22c55e;
+      letter-spacing: -0.03em;
+    }
+
+    .score-label {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .share-btn {
+      border: 1px solid rgba(34,197,94,0.3);
+      background: rgba(34,197,94,0.1);
+      color: #22c55e;
+      border-radius: 12px;
+      padding: 12px 22px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.92rem;
+      font-family: inherit;
+      margin-top: 8px;
+      transition: 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .share-btn:hover {
+      background: rgba(34,197,94,0.18);
+      border-color: rgba(34,197,94,0.5);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .hero, .app, .scene {
+        padding: 12px;
+      }
+
+      .option-btn {
+        padding: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <a href="github.html" class="back-btn">← Back to GitHub Missions</a>
+      <div class="tag">BEGINNER / BRANCHING STORY</div>
+    </div>
+
+    <section class="hero">
+      <h1>Clone to First Commit</h1>
+      <p>
+        Your TL sends a repo link and says:
+        <strong>“Clone this project, add a simple file, and make your first commit.”</strong>
+        Every choice creates a new situation. No retry button. No next button. Real dev-style branching.
+      </p>
+    </section>
+
+    <section class="app">
+      <div class="progress-wrap">
+        <div class="progress-head">
+          <span>Mission Progress</span>
+          <span id="progressText">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="terminal" id="terminalLog">
+TL dropped the repo link in chat.
+You open terminal...
+      </div>
+
+      <div id="sceneArea" class="scene">
+        <div class="scene-id" id="sceneId">SCENE</div>
+        <div class="scene-title" id="sceneTitle"></div>
+        <div class="scene-sub" id="sceneSub"></div>
+        <div class="options" id="options"></div>
+      </div>
+
+      <div class="complete" id="completeScreen">
+        <h2>✅ Mission Complete</h2>
+        <div class="score-wrap">
+          <div class="score-value" id="scoreValue">100%</div>
+          <div class="score-label">Git Status Score</div>
+        </div>
+        <p>
+          You successfully found the real Git flow through branching mistakes, recoveries, and correct choices.
+          You now understand the beginner path from clone → first commit.
+        </p>
+        <div class="code">git clone → cd repo → create/edit file → git add . → git commit -m "first commit" → git status</div>
+        <div class="btn-row">
+          <button class="share-btn" onclick="shareMission()">↗ Share Score</button>
+          <button class="restart-btn" onclick="restartMission()">Play Again</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const scenes = {
+      start: {
+        label: "SCENE 1",
+        progress: 5,
+        log: `TL dropped the repo link in chat.
+Repo URL: https://github.com/team/project.git
+What do you do first?`,
+        title: `Your TL says: "Clone this repo and start working."`,
+        sub: "Pick your first terminal action. Every option opens a different path.",
+        options: [
+          {
+            title: "git clone https://github.com/team/project.git",
+            desc: "Bring the remote repo to your machine.",
+            next: "cloned"
+          },
+          {
+            title: "git commit -m \"start\"",
+            desc: "Try to commit before even getting the repo.",
+            next: "not_repo_error"
+          },
+          {
+            title: "git stash",
+            desc: "Try to stash changes that do not exist yet.",
+            next: "nothing_to_stash"
+          },
+          {
+            title: "git fork",
+            desc: "You think GitHub fork is the same as local clone.",
+            next: "fork_path"
+          }
+        ]
+      },
+
+      not_repo_error: {
+        label: "SCENE 2A",
+        progress: 10,
+        log: `> git commit -m "start"
+fatal: not a git repository (or any of the parent directories): .git`,
+        title: "You tried to commit outside a repository.",
+        sub: "Now you need to recover from this mistake. What makes sense next?",
+        options: [
+          {
+            title: "git clone https://github.com/team/project.git",
+            desc: "Get the project locally first.",
+            next: "cloned"
+          },
+          {
+            title: "git init",
+            desc: "Create a brand new repo instead of using the TL's repo.",
+            next: "init_wrong_repo"
+          },
+          {
+            title: "git push origin main",
+            desc: "Push from a place that isn't even a repo.",
+            next: "push_no_repo"
+          }
+        ]
+      },
+
+      nothing_to_stash: {
+        label: "SCENE 2B",
+        progress: 10,
+        log: `> git stash
+No local changes to save`,
+        title: "You used stash before doing any work.",
+        sub: "Stash only helps when you already have uncommitted changes. What now?",
+        options: [
+          {
+            title: "git clone https://github.com/team/project.git",
+            desc: "Correct recovery. First get the repo.",
+            next: "cloned"
+          },
+          {
+            title: "git status",
+            desc: "Check state, but you're still not inside the project.",
+            next: "status_outside"
+          },
+          {
+            title: "git add .",
+            desc: "Try to stage files outside a repo.",
+            next: "add_outside"
+          }
+        ]
+      },
+
+      fork_path: {
+        label: "SCENE 2C",
+        progress: 12,
+        log: `You forked the repository on GitHub.
+Nice... but the project is still NOT on your machine.`,
+        title: "Fork is not the same as clone.",
+        sub: "You now have a copy on GitHub, but TL asked you to start coding locally. What next?",
+        options: [
+          {
+            title: "Clone your fork",
+            desc: "Now bring your forked repo to local machine.",
+            next: "cloned_fork"
+          },
+          {
+            title: "Wait. The code should appear automatically.",
+            desc: "It won't.",
+            next: "wait_forever"
+          },
+          {
+            title: "git push",
+            desc: "Push before you even have local files.",
+            next: "push_no_repo"
+          }
+        ]
+      },
+
+      init_wrong_repo: {
+        label: "SCENE 3A",
+        progress: 18,
+        log: `> git init
+Initialized empty Git repository in your-folder/.git/`,
+        title: "You created a brand new empty repo.",
+        sub: "This is technically a Git repo... but NOT the project your TL sent. What now?",
+        options: [
+          {
+            title: "Delete/ignore this and clone the real TL repo",
+            desc: "Correct recovery.",
+            next: "cloned"
+          },
+          {
+            title: "Create random file and commit here",
+            desc: "You can commit, but it's the wrong project.",
+            next: "wrong_project_commit"
+          },
+          {
+            title: "Add remote later and hope it works",
+            desc: "Messy beginner detour.",
+            next: "remote_confusion"
+          }
+        ]
+      },
+
+      push_no_repo: {
+        label: "SCENE 3B",
+        progress: 15,
+        log: `> git push origin main
+fatal: not a git repository (or any of the parent directories): .git`,
+        title: "Push failed because you still don't have the actual project locally.",
+        sub: "You need the repo first. How do you recover?",
+        options: [
+          {
+            title: "git clone https://github.com/team/project.git",
+            desc: "Finally do the real first step.",
+            next: "cloned"
+          },
+          {
+            title: "git init",
+            desc: "Create another wrong local repo.",
+            next: "init_wrong_repo"
+          }
+        ]
+      },
+
+      status_outside: {
+        label: "SCENE 3C",
+        progress: 15,
+        log: `> git status
+fatal: not a git repository (or any of the parent directories): .git`,
+        title: "Status also fails outside a repository.",
+        sub: "You still need the real repo on your machine.",
+        options: [
+          {
+            title: "git clone https://github.com/team/project.git",
+            desc: "Correct recovery.",
+            next: "cloned"
+          },
+          {
+            title: "Open GitHub in browser only",
+            desc: "You can read it, but still not code locally.",
+            next: "browser_only"
+          }
+        ]
+      },
+
+      add_outside: {
+        label: "SCENE 3D",
+        progress: 15,
+        log: `> git add .
+fatal: not a git repository (or any of the parent directories): .git`,
+        title: "You cannot stage files outside a Git repo.",
+        sub: "What's the real fix?",
+        options: [
+          {
+            title: "git clone https://github.com/team/project.git",
+            desc: "Correct.",
+            next: "cloned"
+          },
+          {
+            title: "git commit anyway",
+            desc: "Still impossible here.",
+            next: "not_repo_error"
+          }
+        ]
+      },
+
+      wait_forever: {
+        label: "SCENE 3E",
+        progress: 18,
+        log: `You wait...
+and wait...
+and wait...
+
+Nothing appears on your machine.`,
+        title: "GitHub does not magically sync code to your laptop.",
+        sub: "You still need a local copy.",
+        options: [
+          {
+            title: "Clone your fork now",
+            desc: "Yes. Bring it locally.",
+            next: "cloned_fork"
+          },
+          {
+            title: "Refresh browser 7 more times",
+            desc: "Still not local.",
+            next: "browser_only"
+          }
+        ]
+      },
+
+      browser_only: {
+        label: "SCENE 4A",
+        progress: 22,
+        log: `You can see files on GitHub in the browser.
+But terminal still has no local repository.`,
+        title: "Viewing code online is not the same as working locally.",
+        sub: "What actually moves the project to your machine?",
+        options: [
+          {
+            title: "git clone https://github.com/team/project.git",
+            desc: "Correct local setup.",
+            next: "cloned"
+          },
+          {
+            title: "Download ZIP and skip Git",
+            desc: "Possible for files, but not proper Git flow for this mission.",
+            next: "zip_path"
+          }
+        ]
+      },
+
+      zip_path: {
+        label: "SCENE 4B",
+        progress: 25,
+        log: `You downloaded the repo as ZIP.
+Files exist locally... but there's no proper Git history connected for normal workflow.`,
+        title: "ZIP gives files, but not the real Git learning flow.",
+        sub: "TL asked for clone + commit workflow. How do you fix it?",
+        options: [
+          {
+            title: "Delete ZIP folder and use git clone properly",
+            desc: "Correct recovery.",
+            next: "cloned"
+          },
+          {
+            title: "Try git commit inside ZIP folder",
+            desc: "Not a repo unless you init it, and that still isn't the intended flow.",
+            next: "not_repo_error"
+          }
+        ]
+      },
+
+      remote_confusion: {
+        label: "SCENE 4C",
+        progress: 26,
+        log: `You made an empty local repo and start thinking about remotes...
+But you're already off the simple beginner path.`,
+        title: "This is getting messy for a beginner mission.",
+        sub: "What's the cleanest recovery?",
+        options: [
+          {
+            title: "Stop. Clone the real TL repo from scratch",
+            desc: "Best beginner recovery.",
+            next: "cloned"
+          },
+          {
+            title: "Keep hacking random remotes",
+            desc: "This becomes advanced confusion fast.",
+            next: "advanced_confusion"
+          }
+        ]
+      },
+
+      advanced_confusion: {
+        label: "SCENE 5A",
+        progress: 30,
+        log: `You now have:
+- an empty repo
+- a remote idea
+- no real beginner flow
+- growing confusion`,
+        title: "You're deep in unnecessary Git chaos.",
+        sub: "Want the clean path back?",
+        options: [
+          {
+            title: "Reset mindset and clone the real repo",
+            desc: "Correct.",
+            next: "cloned"
+          }
+        ]
+      },
+
+      wrong_project_commit: {
+        label: "SCENE 4D",
+        progress: 28,
+        log: `You created a commit...
+but in the WRONG repository.`,
+        title: "You committed successfully... but not in the TL's project.",
+        sub: "This is a great lesson: a valid command can still be the wrong workflow.",
+        options: [
+          {
+            title: "Go back and clone the real TL repo",
+            desc: "Correct recovery.",
+            next: "cloned"
+          }
+        ]
+      },
+
+      cloned: {
+        label: "SCENE 5",
+        progress: 40,
+        log: `> git clone https://github.com/team/project.git
+Cloning into 'project'...
+done.`,
+        title: "Nice. The repo is now on your machine.",
+        sub: "What should you do before editing files?",
+        options: [
+          {
+            title: "cd project",
+            desc: "Enter the cloned repository folder.",
+            next: "inside_repo"
+          },
+          {
+            title: "git commit -m \"first commit\"",
+            desc: "Try to commit from outside the project folder.",
+            next: "commit_outside_after_clone"
+          },
+          {
+            title: "Delete the folder and clone again",
+            desc: "Panic mode.",
+            next: "panic_clone_again"
+          }
+        ]
+      },
+
+      cloned_fork: {
+        label: "SCENE 5F",
+        progress: 40,
+        log: `You cloned your fork locally.
+Good. You finally have the project on your machine.`,
+        title: "Your fork is local now.",
+        sub: "What's the next correct move before editing?",
+        options: [
+          {
+            title: "cd project",
+            desc: "Enter the repository.",
+            next: "inside_repo"
+          },
+          {
+            title: "git push",
+            desc: "Nothing changed yet.",
+            next: "push_without_changes"
+          }
+        ]
+      },
+
+      commit_outside_after_clone: {
+        label: "SCENE 6A",
+        progress: 42,
+        log: `> git commit -m "first commit"
+fatal: not a git repository (or any of the parent directories): .git
+
+You cloned the repo, but your terminal is still outside the folder.`,
+        title: "Classic beginner mistake: cloned, but not inside repo.",
+        sub: "How do you fix it?",
+        options: [
+          {
+            title: "cd project",
+            desc: "Enter the cloned repo folder.",
+            next: "inside_repo"
+          },
+          {
+            title: "git init here",
+            desc: "Creates another wrong repo outside.",
+            next: "init_wrong_repo"
+          }
+        ]
+      },
+
+      panic_clone_again: {
+        label: "SCENE 6B",
+        progress: 42,
+        log: `You deleted a perfectly good clone and did it again.
+It works... but wasted time.`,
+        title: "Overreacting is common. The repo was already fine.",
+        sub: "Now what should you do?",
+        options: [
+          {
+            title: "cd project",
+            desc: "Correct next move.",
+            next: "inside_repo"
+          },
+          {
+            title: "Delete it one more time for confidence",
+            desc: "Please no 😭",
+            next: "panic_clone_again"
+          }
+        ]
+      },
+
+      push_without_changes: {
+        label: "SCENE 6C",
+        progress: 43,
+        log: `> git push
+Everything up-to-date`,
+        title: "Push did nothing because you haven't changed anything.",
+        sub: "You still need to do actual work.",
+        options: [
+          {
+            title: "cd project",
+            desc: "Enter repo and start real work.",
+            next: "inside_repo"
+          }
+        ]
+      },
+
+      inside_repo: {
+        label: "SCENE 6",
+        progress: 58,
+        log: `> cd project
+You are now inside the repository.`,
+        title: "You're inside the repo. TL says: “Add a simple file or update README.”",
+        sub: "A commit needs a real file change. What do you do?",
+        options: [
+          {
+            title: "Create or edit a file (example: README.md or notes.txt)",
+            desc: "Make a real change in the project.",
+            next: "changed_file"
+          },
+          {
+            title: "git commit -m \"first commit\"",
+            desc: "Commit before making any change.",
+            next: "nothing_to_commit"
+          },
+          {
+            title: "git clone again inside this folder",
+            desc: "Clone inside clone = chaos.",
+            next: "nested_clone_chaos"
+          }
+        ]
+      },
+
+      nothing_to_commit: {
+        label: "SCENE 7A",
+        progress: 60,
+        log: `> git commit -m "first commit"
+nothing to commit, working tree clean`,
+        title: "Git is telling you the truth: there is no change yet.",
+        sub: "What should happen before a commit?",
+        options: [
+          {
+            title: "Create or edit a file first",
+            desc: "Correct recovery.",
+            next: "changed_file"
+          },
+          {
+            title: "git add .",
+            desc: "No changed files yet, so this still won't help much.",
+            next: "add_without_changes"
+          }
+        ]
+      },
+
+      nested_clone_chaos: {
+        label: "SCENE 7B",
+        progress: 60,
+        log: `You attempt weird clone-inside-clone logic.
+Your future self is already tired.`,
+        title: "You are already inside the right repo. No need to clone again.",
+        sub: "What is the real next move?",
+        options: [
+          {
+            title: "Create or edit a file here",
+            desc: "Correct.",
+            next: "changed_file"
+          },
+          {
+            title: "Run away from Git",
+            desc: "Tempting, but no.",
+            next: "inside_repo"
+          }
+        ]
+      },
+
+      add_without_changes: {
+        label: "SCENE 8A",
+        progress: 62,
+        log: `> git add .
+No useful staged changes because nothing changed yet.`,
+        title: "Staging without changes doesn't create a meaningful commit.",
+        sub: "What do you actually need first?",
+        options: [
+          {
+            title: "Create or edit a file",
+            desc: "Correct.",
+            next: "changed_file"
+          },
+          {
+            title: "git commit again",
+            desc: "Still no real changes.",
+            next: "nothing_to_commit"
+          }
+        ]
+      },
+
+      changed_file: {
+        label: "SCENE 8",
+        progress: 75,
+        log: `You created/edited a file.
+Example:
+- README.md updated
+or
+- notes.txt created
+
+Git can now detect changes.`,
+        title: "Nice. You made a real file change.",
+        sub: "Before commit, what should you do next?",
+        options: [
+          {
+            title: "git add .",
+            desc: "Stage all current changes.",
+            next: "staged"
+          },
+          {
+            title: "git pull",
+            desc: "Not the right step for this simple mission.",
+            next: "pull_detour"
+          },
+          {
+            title: "git status",
+            desc: "Useful check, but you still must stage after that.",
+            next: "status_after_change"
+          }
+        ]
+      },
+
+      pull_detour: {
+        label: "SCENE 9A",
+        progress: 76,
+        log: `> git pull
+Already up to date.`,
+        title: "Pull isn't needed here for the basic local commit flow.",
+        sub: "Your local change still needs the proper next step.",
+        options: [
+          {
+            title: "git add .",
+            desc: "Correct next action.",
+            next: "staged"
+          },
+          {
+            title: "git commit -m \"first commit\"",
+            desc: "You skipped staging.",
+            next: "commit_without_stage"
+          }
+        ]
+      },
+
+      status_after_change: {
+        label: "SCENE 9B",
+        progress: 77,
+        log: `> git status
+Changes not staged for commit`,
+        title: "Good observation. Git clearly tells you the state.",
+        sub: "What should you do with 'Changes not staged for commit'?",
+        options: [
+          {
+            title: "git add .",
+            desc: "Stage them.",
+            next: "staged"
+          },
+          {
+            title: "git commit -m \"first commit\"",
+            desc: "Still skipping staging.",
+            next: "commit_without_stage"
+          }
+        ]
+      },
+
+      commit_without_stage: {
+        label: "SCENE 10A",
+        progress: 80,
+        log: `> git commit -m "first commit"
+no changes added to commit`,
+        title: "You tried to commit without staging.",
+        sub: "Git sees changed files, but they are not in the staging area yet.",
+        options: [
+          {
+            title: "git add .",
+            desc: "Correct recovery.",
+            next: "staged"
+          },
+          {
+            title: "git stash",
+            desc: "This hides work instead of creating your first commit.",
+            next: "stash_detour"
+          }
+        ]
+      },
+
+      stash_detour: {
+        label: "SCENE 11A",
+        progress: 82,
+        log: `> git stash
+Saved working directory and index state`,
+        title: "You stashed your work... which means you moved away from your goal.",
+        sub: "Your change is hidden now. How do you recover toward a real first commit?",
+        options: [
+          {
+            title: "git stash pop",
+            desc: "Bring the work back, then continue.",
+            next: "changed_file"
+          },
+          {
+            title: "Celebrate too early",
+            desc: "You still have no commit.",
+            next: "stash_detour"
+          }
+        ]
+      },
+
+      staged: {
+        label: "SCENE 10",
+        progress: 90,
+        log: `> git add .
+Changes staged successfully.`,
+        title: "Perfect. Your changes are staged.",
+        sub: "Now what creates the actual Git history entry?",
+        options: [
+          {
+            title: "git commit -m \"first commit\"",
+            desc: "Create the first local commit.",
+            next: "committed"
+          },
+          {
+            title: "git clone",
+            desc: "You are way past that step.",
+            next: "clone_again_late"
+          },
+          {
+            title: "git stash",
+            desc: "Hides changes instead of committing them.",
+            next: "stash_detour"
+          }
+        ]
+      },
+
+      clone_again_late: {
+        label: "SCENE 11B",
+        progress: 90,
+        log: `You are already inside the repo with staged changes.
+Cloning again now makes no sense.`,
+        title: "Wrong time for clone.",
+        sub: "You're one step away from success. What's the real move?",
+        options: [
+          {
+            title: "git commit -m \"first commit\"",
+            desc: "Yes. Finish it.",
+            next: "committed"
+          }
+        ]
+      },
+
+      committed: {
+        label: "SCENE 11",
+        progress: 98,
+        log: `> git commit -m "first commit"
+[main abc1234] first commit
+ 1 file changed, 1 insertion(+)`,
+        title: "Boom. Your first commit exists.",
+        sub: "One final dev habit: verify the working tree is clean.",
+        options: [
+          {
+            title: "git status",
+            desc: "Check that everything is clean after commit.",
+            next: "complete"
+          },
+          {
+            title: "Delete the repo immediately",
+            desc: "Aggressive post-success behavior.",
+            next: "post_commit_panic"
+          }
+        ]
+      },
+
+      post_commit_panic: {
+        label: "SCENE 12A",
+        progress: 99,
+        log: `You did the hard part...
+then considered destroying the evidence.`,
+        title: "No need for post-commit panic.",
+        sub: "Just verify your repo state like a calm developer.",
+        options: [
+          {
+            title: "git status",
+            desc: "Correct final check.",
+            next: "complete"
+          }
+        ]
+      },
+
+      complete: {
+        complete: true,
+        progress: 100,
+        log: `> git status
+On branch main
+nothing to commit, working tree clean
+
+TL: "Good. You understand the basic Git flow."`
+      }
+    };
+
+    const OPTIMAL_STEPS = 6;
+    let currentScene = "start";
+    let totalSteps = 0;
+
+    const sceneId = document.getElementById("sceneId");
+    const sceneTitle = document.getElementById("sceneTitle");
+    const sceneSub = document.getElementById("sceneSub");
+    const optionsEl = document.getElementById("options");
+    const terminalLog = document.getElementById("terminalLog");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const sceneArea = document.getElementById("sceneArea");
+    const completeScreen = document.getElementById("completeScreen");
+
+    function renderScene(id) {
+      const scene = scenes[id];
+      currentScene = id;
+
+      terminalLog.textContent = scene.log || "";
+      progressFill.style.width = `${scene.progress || 0}%`;
+      progressText.textContent = `${scene.progress || 0}%`;
+
+      if (scene.complete) {
+        const score = Math.min(100, Math.round((OPTIMAL_STEPS / totalSteps) * 100));
+        document.getElementById("scoreValue").textContent = score + "%";
+        sceneArea.style.display = "none";
+        completeScreen.classList.add("show");
+        return;
+      }
+
+      sceneArea.style.display = "block";
+      completeScreen.classList.remove("show");
+
+      sceneId.textContent = scene.label || "SCENE";
+      sceneTitle.textContent = scene.title || "";
+      sceneSub.textContent = scene.sub || "";
+      optionsEl.innerHTML = "";
+
+      scene.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `
+          <div class="option-title">${option.title}</div>
+          <div class="option-desc">${option.desc}</div>
+        `;
+        btn.addEventListener("click", () => {
+          totalSteps++;
+          renderScene(option.next);
+        });
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function restartMission() {
+      currentScene = "start";
+      totalSteps = 0;
+      renderScene("start");
+    }
+
+    function shareMission() {
+      const score = document.getElementById("scoreValue").textContent;
+      const text = `My git status score is : ${score}\nwhat's yours check it\nhttps://sarim.github.io/devsimulationgit`;
+      if (navigator.share) {
+        navigator.share({ text: text }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Score copied to clipboard!");
+        });
+      }
+    }
+
+    renderScene("start");
+  </script>
+</body>
+</html>

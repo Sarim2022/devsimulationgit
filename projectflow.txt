@@ -1,0 +1,33 @@
+We are building a developer learning game platform that teaches real-world 
+development skills through interactive story-based branching quizzes, not 
+just Git. The platform starts from a home screen / mission hub where users 
+can enter different learning tracks such as GitHub, APIs, SQL, and more topics 
+in the future, with new categories continuously added over time. Each category 
+contains multiple developer missions, and every mission is designed like a real-
+world scenario where the learner acts as a developer and must complete tasks by 
+making decisions step by step. Instead of normal “correct/wrong” quizzes, every 
+choice leads to a branching story path, meaning even wrong answers create new 
+situations, new problems, and deeper mini-quizzes that the user must solve, just
+ like real debugging and real development work. For example, a GitHub mission might
+  ask the user to clone a repo and make a first commit, while future API missions may 
+  simulate fetching data, handling errors, or fixing endpoints, and SQL missions may 
+  involve writing queries, debugging joins, or solving backend data issues. The UI is 
+  intentionally minimal, small, and developer-focused so users stay focused on logic, 
+  terminal-style thinking, and problem-solving rather than flashy visuals. Overall, 
+  the project is a developer adventure learning platform where every topic becomes a 
+  story-driven branching mission, helping beginners and future developers learn by 
+  thinking through realistic workflows, mistakes, recovery paths, and actual
+   engineering decisions.
+
+
+Current implemention 
+Splash done  index.html ,
+home has [ github , api , sql ] index.html
+in github now github.html
+6 quiz story
+1st one has done in gitquiz1.html
+2nd one has done in gitquiz2.html
+3rd?
+4th?
+5th?
+6th?

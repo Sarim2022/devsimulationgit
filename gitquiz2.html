@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Push Rejected Panic | DEV GAME SIMULATION</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050505;
+      --card: #0c0c0c;
+      --card-2: #101010;
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.14);
+      --text: #f5f5f5;
+      --muted: #9ca3af;
+      --accent: #e5e7eb;
+      --green: #22c55e;
+      --red: #ef4444;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 18px 14px 30px;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      background: #0a0a0a;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      transition: 0.2s ease;
+    }
+
+    .back-btn:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    .tag {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.72rem;
+      color: #d1d5db;
+      border: 1px solid var(--border);
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #0a0a0a;
+    }
+
+    .hero {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #0b0b0b, #080808);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1 {
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .app {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #0b0b0b, #070707);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .progress-wrap {
+      margin-bottom: 14px;
+    }
+
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #111;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 8%;
+      background: linear-gradient(90deg, rgba(255,255,255,0.45), rgba(255,255,255,0.18));
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .terminal {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      background: #080808;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 14px;
+      color: #d1d5db;
+      min-height: 60px;
+      white-space: pre-line;
+    }
+
+    .scene {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .scene-id {
+      display: inline-block;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.68rem;
+      color: #d1d5db;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #0a0a0a;
+      border-radius: 999px;
+      padding: 5px 8px;
+      margin-bottom: 10px;
+    }
+
+    .scene-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      line-height: 1.45;
+      margin-bottom: 8px;
+    }
+
+    .scene-sub {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .option-btn {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #111, #0d0d0d);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.18s ease;
+      font-family: inherit;
+    }
+
+    .option-btn:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+      background: #131313;
+    }
+
+    .option-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .option-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .complete {
+      display: none;
+      border: 1px solid rgba(34,197,94,0.2);
+      background: rgba(34,197,94,0.05);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .complete.show {
+      display: block;
+    }
+
+    .complete h2 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .complete p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .code {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.8rem;
+      background: #0a0a0a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      color: #e5e7eb;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .restart-btn {
+      border: 1px solid var(--border);
+      background: #111;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .restart-btn:hover {
+      border-color: var(--border-strong);
+    }
+
+    .score-wrap {
+      margin-bottom: 16px;
+    }
+
+    .score-value {
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: #22c55e;
+      letter-spacing: -0.03em;
+    }
+
+    .score-label {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .share-btn {
+      border: 1px solid rgba(34,197,94,0.3);
+      background: rgba(34,197,94,0.1);
+      color: #22c55e;
+      border-radius: 12px;
+      padding: 12px 22px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.92rem;
+      font-family: inherit;
+      margin-top: 8px;
+      transition: 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .share-btn:hover {
+      background: rgba(34,197,94,0.18);
+      border-color: rgba(34,197,94,0.5);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .hero, .app, .scene {
+        padding: 12px;
+      }
+
+      .option-btn {
+        padding: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <a href="github.html" class="back-btn">← Back to GitHub Missions</a>
+      <div class="tag">BEGINNER+ / BRANCHING STORY</div>
+    </div>
+
+    <section class="hero">
+      <h1>Push Rejected Panic</h1>
+      <p>
+        You finished your feature and committed locally. You run <strong>git push</strong> and...
+        <strong>"rejected — remote contains work that you do not have locally."</strong>
+        Someone pushed while you were coding. Every wrong move makes it worse.
+      </p>
+    </section>
+
+    <section class="app">
+      <div class="progress-wrap">
+        <div class="progress-head">
+          <span>Mission Progress</span>
+          <span id="progressText">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="terminal" id="terminalLog">
+You finished coding your feature.
+Changes committed locally.
+Time to push...
+      </div>
+
+      <div id="sceneArea" class="scene">
+        <div class="scene-id" id="sceneId">SCENE</div>
+        <div class="scene-title" id="sceneTitle"></div>
+        <div class="scene-sub" id="sceneSub"></div>
+        <div class="options" id="options"></div>
+      </div>
+
+      <div class="complete" id="completeScreen">
+        <h2>✅ Mission Complete</h2>
+        <div class="score-wrap">
+          <div class="score-value" id="scoreValue">100%</div>
+          <div class="score-label">Git Status Score</div>
+        </div>
+        <p>
+          You handled a rejected push like a real developer — no force push disasters, no lost commits.
+          You now understand how to sync local and remote branches safely.
+        </p>
+        <div class="code">git push (rejected) → git pull --rebase origin main → git push origin main → git status</div>
+        <div class="btn-row">
+          <button class="share-btn" onclick="shareMission()">↗ Share Score</button>
+          <button class="restart-btn" onclick="restartMission()">Play Again</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const scenes = {
+      start: {
+        label: "SCENE 1",
+        progress: 5,
+        log: `You finished coding a small feature.
+Your changes are committed locally.
+Time to push your work to the remote repo.`,
+        title: `Your commit is ready. Time to share it with the team.`,
+        sub: "Pick your first move to get your local commit onto the remote.",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Push your local commits to the remote repository.",
+            next: "push_rejected"
+          },
+          {
+            title: "git push --force origin main",
+            desc: "Force push. That should definitely work, right?",
+            next: "force_push_danger"
+          },
+          {
+            title: "git status",
+            desc: "Check your repo state before doing anything.",
+            next: "status_before_push"
+          },
+          {
+            title: "git pull origin main",
+            desc: "Pull first, just in case.",
+            next: "pull_too_early"
+          }
+        ]
+      },
+
+      push_rejected: {
+        label: "SCENE 2",
+        progress: 15,
+        log: `> git push origin main
+To https://github.com/team/project.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs
+hint: Updates were rejected because the remote contains
+hint: work that you do not have locally.`,
+        title: "Push rejected! The remote has commits you don't have.",
+        sub: "A teammate pushed changes while you were working. Your local branch is behind. How do you handle this?",
+        options: [
+          {
+            title: "git pull origin main",
+            desc: "Fetch and merge remote changes into your branch.",
+            next: "pull_merge"
+          },
+          {
+            title: "git pull --rebase origin main",
+            desc: "Fetch remote and replay your commits on top. Cleaner history.",
+            next: "pull_rebase"
+          },
+          {
+            title: "git push --force origin main",
+            desc: "Override the remote. Force your version through.",
+            next: "force_push_danger"
+          },
+          {
+            title: "git reset --hard HEAD~1",
+            desc: "Delete your own commit and start over.",
+            next: "reset_own_commit"
+          }
+        ]
+      },
+
+      force_push_danger: {
+        label: "SCENE 2A",
+        progress: 12,
+        log: `> git push --force origin main
+Total 3 (delta 1), reused 0 (delta 0)
+To https://github.com/team/project.git
+ + a1b2c3d...f4e5d6a main -> main (forced update)
+
+⚠️  You just FORCE PUSHED.
+Your teammate's commits have been erased from the remote.`,
+        title: "You just overwrote your teammate's work on the remote.",
+        sub: "Force push replaces remote history with yours. Your teammate's recent commits are gone. What do you do?",
+        options: [
+          {
+            title: "Tell TL immediately and ask for help",
+            desc: "Honest recovery is the professional move.",
+            next: "force_tell_tl"
+          },
+          {
+            title: "Stay quiet and hope nobody notices",
+            desc: "Maybe they won't check until Monday...",
+            next: "force_quiet"
+          },
+          {
+            title: "git pull origin main",
+            desc: "Try pulling to see if teammate's code is still there.",
+            next: "force_pull_check"
+          }
+        ]
+      },
+
+      force_tell_tl: {
+        label: "SCENE 3A",
+        progress: 22,
+        log: `You told TL about the force push.
+
+TL: "Don't panic. Your teammate still has the commits
+locally. We can recover from their machine."
+
+Teammate re-pushes their work.
+Crisis resolved.`,
+        title: "Honest move. TL helped recover the teammate's work.",
+        sub: "Lesson: never use --force unless you truly understand the consequences. Now let's do this properly.",
+        options: [
+          {
+            title: "git pull origin main",
+            desc: "Pull the restored remote changes properly this time.",
+            next: "pull_merge"
+          }
+        ]
+      },
+
+      force_quiet: {
+        label: "SCENE 3B",
+        progress: 15,
+        log: `Next morning...
+
+Teammate: "Where are my commits? I pushed them yesterday."
+TL checks git log on remote...
+Your force push is clearly visible in the reflog.
+Everyone knows what happened.`,
+        title: "Teammate found out. The git log doesn't lie.",
+        sub: "Hiding mistakes in Git is nearly impossible. What now?",
+        options: [
+          {
+            title: "Admit and help fix it",
+            desc: "Better late than never.",
+            next: "force_tell_tl"
+          },
+          {
+            title: "Blame the server",
+            desc: "\"I think GitHub had an outage...\"",
+            next: "blame_server"
+          }
+        ]
+      },
+
+      blame_server: {
+        label: "SCENE 4A",
+        progress: 18,
+        log: `TL: "The reflog clearly shows a forced update
+from your machine at 3:47 PM yesterday."
+
+TL: "There was no GitHub outage."
+TL: "Just own it and let's fix it."`,
+        title: "Nobody believes Git randomly deletes commits.",
+        sub: "Git keeps receipts. Own the mistake and move forward.",
+        options: [
+          {
+            title: "Admit it and help recover",
+            desc: "Only real option left.",
+            next: "force_tell_tl"
+          }
+        ]
+      },
+
+      force_pull_check: {
+        label: "SCENE 3C",
+        progress: 16,
+        log: `> git pull origin main
+Already up to date.
+
+The remote only has YOUR commits now.
+Teammate's work is completely gone from the remote.`,
+        title: "Pulling won't bring back what you overwrote.",
+        sub: "The remote now only has your history. Teammate's commits need to be recovered from their local machine.",
+        options: [
+          {
+            title: "Tell TL what happened",
+            desc: "Only way to recover properly.",
+            next: "force_tell_tl"
+          }
+        ]
+      },
+
+      status_before_push: {
+        label: "SCENE 2B",
+        progress: 8,
+        log: `> git status
+On branch main
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean`,
+        title: "Status shows you're 1 commit ahead. Looks ready to push.",
+        sub: "Git says your commit exists locally but isn't on the remote yet.",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Push your local commit to remote.",
+            next: "push_rejected"
+          },
+          {
+            title: "git diff origin/main",
+            desc: "See exactly what's different between local and remote.",
+            next: "diff_check"
+          }
+        ]
+      },
+
+      diff_check: {
+        label: "SCENE 3D",
+        progress: 10,
+        log: `> git diff origin/main
+diff --git a/feature.js b/feature.js
++ function newFeature() {
++   return "Hello from local commit";
++ }
+
+Your changes look good.`,
+        title: "Diff confirms your changes. Everything looks clean.",
+        sub: "Time to push it to the remote.",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Send it.",
+            next: "push_rejected"
+          }
+        ]
+      },
+
+      pull_too_early: {
+        label: "SCENE 2C",
+        progress: 10,
+        log: `> git pull origin main
+remote: Enumerating objects: 5, done.
+From https://github.com/team/project.git
+   a1b2c3d..e5f6a7b  main -> origin/main
+Merge made by the 'ort' strategy.
+ utils.js | 3 +++
+ 1 file changed, 3 insertions(+)`,
+        title: "Good instinct. You pulled and got teammate's new commits.",
+        sub: "Your pull merged the remote changes with yours automatically. Now what?",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Push everything now.",
+            next: "push_success_merge"
+          },
+          {
+            title: "git log --oneline",
+            desc: "Check what the history looks like.",
+            next: "log_after_early_pull"
+          },
+          {
+            title: "git pull again",
+            desc: "Pull one more time to be extra safe.",
+            next: "pull_again_unnecessary"
+          }
+        ]
+      },
+
+      log_after_early_pull: {
+        label: "SCENE 3E",
+        progress: 14,
+        log: `> git log --oneline
+c3d4e5f Merge branch 'main' of github.com/team/project
+a1b2c3d your feature commit
+e5f6a7b teammate's commit
+b8c9d0e previous shared commit`,
+        title: "You can see the merge commit in the log.",
+        sub: "Your commit + teammate's commit + a merge commit tying them together.",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Push it all to remote.",
+            next: "push_success_merge"
+          }
+        ]
+      },
+
+      pull_again_unnecessary: {
+        label: "SCENE 3F",
+        progress: 12,
+        log: `> git pull origin main
+Already up to date.`,
+        title: "Already up to date. One pull was enough.",
+        sub: "You already have everything. Just push now.",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Push your merged work.",
+            next: "push_success_merge"
+          }
+        ]
+      },
+
+      reset_own_commit: {
+        label: "SCENE 3G",
+        progress: 14,
+        log: `> git reset --hard HEAD~1
+HEAD is now at b8c9d0e previous shared commit
+
+⚠️  Your feature commit is gone from the branch.
+All the code you just wrote... vanished from working tree.`,
+        title: "You just deleted your own commit!",
+        sub: "Hard reset moved HEAD back and wiped your changes. Your work is gone. How do you recover?",
+        options: [
+          {
+            title: "git reflog",
+            desc: "Check Git's internal log of all HEAD movements.",
+            next: "reflog_self"
+          },
+          {
+            title: "Rewrite everything from memory",
+            desc: "Painful but technically possible.",
+            next: "redo_work"
+          },
+          {
+            title: "Cry",
+            desc: "Valid emotional response.",
+            next: "cry_then_reflog"
+          }
+        ]
+      },
+
+      reflog_self: {
+        label: "SCENE 4B",
+        progress: 24,
+        log: `> git reflog
+b8c9d0e HEAD@{0}: reset: moving to HEAD~1
+a1b2c3d HEAD@{1}: commit: add new feature
+b8c9d0e HEAD@{2}: pull: Fast-forward
+
+There it is! a1b2c3d — your lost commit.`,
+        title: "Reflog saved you. Your commit hash is right there.",
+        sub: "Git's reflog tracks every HEAD movement, even after reset. How do you restore it?",
+        options: [
+          {
+            title: "git reset --hard a1b2c3d",
+            desc: "Move HEAD back to your commit.",
+            next: "recovered_commit"
+          },
+          {
+            title: "git cherry-pick a1b2c3d",
+            desc: "Apply that commit onto current HEAD.",
+            next: "recovered_commit"
+          }
+        ]
+      },
+
+      cry_then_reflog: {
+        label: "SCENE 4C",
+        progress: 18,
+        log: `You stare at the terminal for a while.
+Deep breath.
+...
+Okay. Time to think like a developer.
+Git almost never truly deletes data.`,
+        title: "Done? Good. Git has a safety net called reflog.",
+        sub: "Even after hard reset, the commit still exists in Git's internal log.",
+        options: [
+          {
+            title: "git reflog",
+            desc: "Check the reflog for your lost commit.",
+            next: "reflog_self"
+          }
+        ]
+      },
+
+      redo_work: {
+        label: "SCENE 4D",
+        progress: 26,
+        log: `You open the file and start rewriting from scratch.
+15 minutes later... it's roughly the same code.
+You commit again.
+
+Next time, try git reflog instead.`,
+        title: "You rewrote everything. It works, but reflog would've been instant.",
+        sub: "Lesson: git reflog can recover commits after hard reset. Remember that.",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Try pushing your re-done commit.",
+            next: "push_rejected"
+          }
+        ]
+      },
+
+      recovered_commit: {
+        label: "SCENE 5A",
+        progress: 32,
+        log: `Your commit is back!
+
+> git log --oneline
+a1b2c3d add new feature
+b8c9d0e previous shared commit
+
+Reflog saved the day.`,
+        title: "Commit recovered. Crisis averted.",
+        sub: "Now let's get back to the original problem: pushing to remote.",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Try pushing again.",
+            next: "push_rejected"
+          },
+          {
+            title: "git pull origin main",
+            desc: "Pull first to avoid rejection.",
+            next: "pull_merge"
+          }
+        ]
+      },
+
+      pull_merge: {
+        label: "SCENE 6",
+        progress: 60,
+        log: `> git pull origin main
+remote: Enumerating objects: 5, done.
+Auto-merging utils.js
+Merge made by the 'ort' strategy.
+ utils.js | 3 +++
+ 1 file changed, 3 insertions(+)`,
+        title: "Pull succeeded. Git merged the remote changes with yours.",
+        sub: "Your local branch now has both your commit and your teammate's commit, joined by a merge commit. What next?",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Push the merged result to remote.",
+            next: "push_success_merge"
+          },
+          {
+            title: "git log --oneline",
+            desc: "Check how the history looks after merge.",
+            next: "log_after_merge"
+          },
+          {
+            title: "git status",
+            desc: "Verify the state before pushing.",
+            next: "status_after_merge"
+          }
+        ]
+      },
+
+      pull_rebase: {
+        label: "SCENE 6R",
+        progress: 65,
+        log: `> git pull --rebase origin main
+remote: Enumerating objects: 5, done.
+First, rewinding head to replay your work on top of it...
+Applying: add new feature
+Successfully rebased and updated refs/heads/main.`,
+        title: "Rebase succeeded. Your commit was replayed on top of the remote changes.",
+        sub: "No merge commit created. Your history stays linear and clean.",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Push the rebased result to remote.",
+            next: "push_success_rebase"
+          },
+          {
+            title: "git log --oneline",
+            desc: "Check the clean linear history.",
+            next: "log_after_rebase"
+          },
+          {
+            title: "git status",
+            desc: "Verify state before pushing.",
+            next: "status_after_rebase"
+          }
+        ]
+      },
+
+      log_after_merge: {
+        label: "SCENE 7A",
+        progress: 68,
+        log: `> git log --oneline
+c3d4e5f Merge branch 'main' of github.com/team/project
+a1b2c3d add new feature
+e5f6a7b teammate's utils update
+b8c9d0e initial setup`,
+        title: "History shows a merge commit combining both branches.",
+        sub: "This is normal with git pull (merge). The merge commit ties the histories together.",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Push everything to remote.",
+            next: "push_success_merge"
+          }
+        ]
+      },
+
+      log_after_rebase: {
+        label: "SCENE 7B",
+        progress: 72,
+        log: `> git log --oneline
+f7a8b9c add new feature
+e5f6a7b teammate's utils update
+b8c9d0e initial setup`,
+        title: "Clean linear history. No merge commit.",
+        sub: "Rebase replayed your commit on top, so it looks like you wrote it after the teammate's work. Many teams prefer this.",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Push the clean history to remote.",
+            next: "push_success_rebase"
+          }
+        ]
+      },
+
+      status_after_merge: {
+        label: "SCENE 7C",
+        progress: 66,
+        log: `> git status
+On branch main
+Your branch is ahead of 'origin/main' by 2 commits.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean`,
+        title: "2 commits ahead: your feature + the merge commit.",
+        sub: "Everything is clean. Ready to push.",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Push to remote.",
+            next: "push_success_merge"
+          }
+        ]
+      },
+
+      status_after_rebase: {
+        label: "SCENE 7D",
+        progress: 70,
+        log: `> git status
+On branch main
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean`,
+        title: "1 commit ahead: just your feature. Clean.",
+        sub: "Rebase kept it simple. Push now.",
+        options: [
+          {
+            title: "git push origin main",
+            desc: "Push to remote.",
+            next: "push_success_rebase"
+          }
+        ]
+      },
+
+      push_success_merge: {
+        label: "SCENE 8",
+        progress: 92,
+        log: `> git push origin main
+Enumerating objects: 8, done.
+Counting objects: 100% (8/8), done.
+To https://github.com/team/project.git
+   e5f6a7b..c3d4e5f  main -> main
+
+Push successful!`,
+        title: "Your code is on the remote. Push accepted!",
+        sub: "One last dev habit: verify everything is synced.",
+        options: [
+          {
+            title: "git status",
+            desc: "Confirm local and remote are in sync.",
+            next: "final_check_merge"
+          },
+          {
+            title: "git push --force just because",
+            desc: "You didn't learn anything today.",
+            next: "force_after_success"
+          }
+        ]
+      },
+
+      push_success_rebase: {
+        label: "SCENE 8R",
+        progress: 92,
+        log: `> git push origin main
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+To https://github.com/team/project.git
+   e5f6a7b..f7a8b9c  main -> main
+
+Push successful! Clean linear history preserved.`,
+        title: "Pushed with clean history. Nicely done!",
+        sub: "Final check: make sure everything is synced.",
+        options: [
+          {
+            title: "git status",
+            desc: "Confirm local and remote are in sync.",
+            next: "final_check_rebase"
+          },
+          {
+            title: "Celebrate and close terminal",
+            desc: "Always verify before walking away.",
+            next: "close_too_early"
+          }
+        ]
+      },
+
+      force_after_success: {
+        label: "SCENE 9A",
+        progress: 94,
+        log: `> git push --force origin main
+Everything up-to-date
+
+Lucky. Already up to date so no damage this time.
+But DO NOT make this a habit.`,
+        title: "No harm this time, but force push is not a finishing move.",
+        sub: "Just verify with git status like a normal developer.",
+        options: [
+          {
+            title: "git status",
+            desc: "Do the right final check.",
+            next: "final_check_merge"
+          }
+        ]
+      },
+
+      close_too_early: {
+        label: "SCENE 9B",
+        progress: 94,
+        log: `You close the terminal and open Twitter.
+5 minutes later...
+
+TL: "Did you push? I don't see your changes."
+You: "...I think so?"`,
+        title: "Always verify before walking away.",
+        sub: "A quick git status would have given you confidence.",
+        options: [
+          {
+            title: "git status",
+            desc: "Verify now.",
+            next: "final_check_rebase"
+          }
+        ]
+      },
+
+      final_check_merge: {
+        complete: true,
+        progress: 100,
+        log: `> git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+
+TL: "Got your push. Looks good. Nice recovery."
+Approach used: pull (merge) → push`
+      },
+
+      final_check_rebase: {
+        complete: true,
+        progress: 100,
+        log: `> git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+
+TL: "Clean history. Good push. Well handled."
+Approach used: pull --rebase → push`
+      }
+    };
+
+    const OPTIMAL_STEPS = 4;
+    let currentScene = "start";
+    let totalSteps = 0;
+
+    const sceneId = document.getElementById("sceneId");
+    const sceneTitle = document.getElementById("sceneTitle");
+    const sceneSub = document.getElementById("sceneSub");
+    const optionsEl = document.getElementById("options");
+    const terminalLog = document.getElementById("terminalLog");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const sceneArea = document.getElementById("sceneArea");
+    const completeScreen = document.getElementById("completeScreen");
+
+    function renderScene(id) {
+      const scene = scenes[id];
+      currentScene = id;
+
+      terminalLog.textContent = scene.log || "";
+      progressFill.style.width = `${scene.progress || 0}%`;
+      progressText.textContent = `${scene.progress || 0}%`;
+
+      if (scene.complete) {
+        const score = Math.min(100, Math.round((OPTIMAL_STEPS / totalSteps) * 100));
+        document.getElementById("scoreValue").textContent = score + "%";
+        sceneArea.style.display = "none";
+        completeScreen.classList.add("show");
+        return;
+      }
+
+      sceneArea.style.display = "block";
+      completeScreen.classList.remove("show");
+
+      sceneId.textContent = scene.label || "SCENE";
+      sceneTitle.textContent = scene.title || "";
+      sceneSub.textContent = scene.sub || "";
+      optionsEl.innerHTML = "";
+
+      scene.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `
+          <div class="option-title">${option.title}</div>
+          <div class="option-desc">${option.desc}</div>
+        `;
+        btn.addEventListener("click", () => {
+          totalSteps++;
+          renderScene(option.next);
+        });
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function restartMission() {
+      currentScene = "start";
+      totalSteps = 0;
+      renderScene("start");
+    }
+
+    function shareMission() {
+      const score = document.getElementById("scoreValue").textContent;
+      const text = `My git status score is : ${score}\nwhat's yours check it\nhttps://sarim.github.io/devsimulationgit`;
+      if (navigator.share) {
+        navigator.share({ text: text }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Score copied to clipboard!");
+        });
+      }
+    }
+
+    renderScene("start");
+  </script>
+</body>
+</html>
