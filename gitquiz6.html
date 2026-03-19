@@ -3,56 +3,302 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coming Soon | DEV GAME SIMULATION</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>Detached HEAD Disaster | DEV GAME SIMULATION</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #050505;
+      --card: #0c0c0c;
+      --border: rgba(255,255,255,0.08);
+      --text: #f5f5f5;
+      --muted: #9ca3af;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       font-family: 'Inter', sans-serif;
-      background: #050505;
-      color: #f5f5f5;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 18px 14px 30px;
     }
-    .wrap {
-      text-align: center;
-      padding: 40px 20px;
-    }
-    .wrap h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 14px;
-      color: #e5e7eb;
-    }
-    .wrap p {
-      color: #9ca3af;
-      font-size: 1rem;
-      margin-bottom: 24px;
-    }
-    .back-btn {
-      text-decoration: none;
-      color: #9ca3af;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: #0a0a0a;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 0.88rem;
-      transition: 0.2s ease;
-    }
-    .back-btn:hover {
-      color: #f5f5f5;
-      border-color: rgba(255,255,255,0.14);
-    }
+
+    .container { max-width: 760px; margin: 0 auto; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .back-btn { text-decoration: none; color: var(--muted); border: 1px solid var(--border); background: #0a0a0a; padding: 8px 12px; border-radius: 999px; font-size: 0.84rem; transition: 0.2s ease; }
+    .back-btn:hover { color: var(--text); border-color: var(--border-strong); }
+    .tag { font-family: "JetBrains Mono", monospace; font-size: 0.72rem; color: #d1d5db; border: 1px solid var(--border); padding: 7px 10px; border-radius: 999px; background: #0a0a0a; }
+    .hero { border: 1px solid var(--border); background: linear-gradient(180deg, #0b0b0b, #080808); border-radius: 18px; padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); }
+    .hero h1 { font-size: clamp(1.3rem, 3vw, 2rem); font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; }
+    .hero p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    .app { border: 1px solid var(--border); background: linear-gradient(180deg, #0b0b0b, #070707); border-radius: 18px; padding: 14px; box-shadow: var(--shadow); }
+    .progress-wrap { margin-bottom: 14px; }
+    .progress-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; font-size: 0.8rem; color: var(--muted); }
+    .progress-bar { height: 8px; background: #111; border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04); }
+    .progress-fill { height: 100%; width: 8%; background: linear-gradient(90deg, rgba(255,255,255,0.45), rgba(255,255,255,0.18)); border-radius: 999px; transition: width 0.25s ease; }
+    .terminal { font-family: "JetBrains Mono", monospace; font-size: 0.78rem; line-height: 1.6; background: #080808; border: 1px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 14px; color: #d1d5db; min-height: 60px; white-space: pre-line; }
+    .scene { border: 1px solid var(--border); background: var(--card); border-radius: 16px; padding: 14px; }
+    .scene-id { display: inline-block; font-family: "JetBrains Mono", monospace; font-size: 0.68rem; color: #d1d5db; border: 1px solid rgba(255,255,255,0.08); background: #0a0a0a; border-radius: 999px; padding: 5px 8px; margin-bottom: 10px; }
+    .scene-title { font-size: 1.08rem; font-weight: 700; line-height: 1.45; margin-bottom: 8px; }
+    .scene-sub { color: var(--muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 14px; }
+    .options { display: grid; gap: 10px; }
+    .option-btn { width: 100%; border: 1px solid var(--border); background: linear-gradient(180deg, #111, #0d0d0d); color: var(--text); border-radius: 14px; padding: 12px; text-align: left; cursor: pointer; transition: 0.18s ease; font-family: inherit; }
+    .option-btn:hover { border-color: var(--border-strong); transform: translateY(-1px); background: #131313; }
+    .option-title { font-size: 0.92rem; font-weight: 700; margin-bottom: 4px; }
+    .option-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.45; }
+    .complete { display: none; border: 1px solid rgba(34,197,94,0.2); background: rgba(34,197,94,0.05); border-radius: 16px; padding: 16px; text-align: center; }
+    .complete.show { display: block; }
+    .complete h2 { font-size: 1.3rem; margin-bottom: 8px; }
+    .complete p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px; }
+    .code { font-family: "JetBrains Mono", monospace; font-size: 0.8rem; background: #0a0a0a; border: 1px solid var(--border); border-radius: 12px; padding: 10px; color: #e5e7eb; display: inline-block; margin-bottom: 12px; }
+    .restart-btn { border: 1px solid var(--border); background: #111; color: var(--text); border-radius: 12px; padding: 10px 14px; cursor: pointer; font-weight: 600; }
+    .restart-btn:hover { border-color: var(--border-strong); }
+    .score-wrap { margin-bottom: 16px; }
+    .score-value { font-size: 2.6rem; font-weight: 800; color: #22c55e; letter-spacing: -0.03em; }
+    .score-label { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+    .share-btn { border: 1px solid rgba(34,197,94,0.3); background: rgba(34,197,94,0.1); color: #22c55e; border-radius: 12px; padding: 12px 22px; cursor: pointer; font-weight: 600; font-size: 0.92rem; font-family: inherit; margin-top: 8px; transition: 0.2s ease; display: inline-flex; align-items: center; gap: 8px; }
+    .share-btn:hover { background: rgba(34,197,94,0.18); border-color: rgba(34,197,94,0.5); }
+    .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Coming Soon🐶</h1>
-    <p>This mission is under development. Check back later.</p>
-    <a href="github.html" class="back-btn">← Go Back</a>
+  <div class="container">
+    <div class="topbar">
+      <a href="github.html" class="back-btn">← Back to GitHub Missions</a>
+      <div class="tag">ADVANCED / BRANCHING STORY</div>
+    </div>
+
+    <section class="hero">
+      <h1>Detached HEAD Disaster</h1>
+      <p>
+        To inspect old code, you check out a commit hash directly. You make a few changes and commit them.
+        Then you switch back to `main`... and your new commit is gone. Welcome to a "detached HEAD" state.
+      </p>
+    </section>
+
+    <section class="app">
+      <div class="progress-wrap">
+        <div class="progress-head"><span>Mission Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <div class="terminal" id="terminalLog">You need to look at an old version of the project...</div>
+      <div id="sceneArea" class="scene">
+        <div class="scene-id" id="sceneId">SCENE</div>
+        <div class="scene-title" id="sceneTitle"></div>
+        <div class="scene-sub" id="sceneSub"></div>
+        <div class="options" id="options"></div>
+      </div>
+      <div class="complete" id="completeScreen">
+        <h2>✅ Mission Complete</h2>
+        <div class="score-wrap"><div class="score-value" id="scoreValue">100%</div><div class="score-label">Git Status Score</div></div>
+        <p>You escaped the detached HEAD state and saved your work. You created a temporary branch to hold your experimental commit, preventing it from being lost.</p>
+        <div class="code">git checkout <hash> → (commit) → git checkout -b temp-branch</div>
+        <div class="btn-row">
+          <button class="share-btn" onclick="shareMission()">↗ Share Score</button>
+          <button class="restart-btn" onclick="restartMission()">Play Again</button>
+        </div>
+      </div>
+    </section>
   </div>
+
+  <script>
+    const scenes = {
+      start: {
+        label: "SCENE 1",
+        progress: 10,
+        log: `You want to inspect the code from two weeks ago.
+The commit hash is 7a8b9c0.`,
+        title: "You need to view an old version of the project.",
+        sub: "What command do you use to travel back in time to that specific commit?",
+        options: [
+          { title: "git checkout 7a8b9c0", desc: "Check out the specific commit hash.", next: "detached_head" },
+          { title: "git reset --hard 7a8b9c0", desc: "Dangerously reset your entire branch to that old commit.", next: "reset_disaster" },
+          { title: "git revert 7a8b9c0", desc: "Create a new commit that undoes the changes from that commit.", next: "revert_misunderstanding" }
+        ]
+      },
+      reset_disaster: {
+        label: "SCENE 2A",
+        progress: 12,
+        log: `> git reset --hard 7a8b9c0
+You've just deleted all commits on your branch that came after 7a8b9c0.
+They might be gone forever if you don't know how to use reflog.`,
+        title: "You used `reset --hard`, a destructive command.",
+        sub: "`reset` rewrites history. `checkout` just moves your view. This was the wrong tool for just looking at old code.",
+        options: [
+          { title: "Restart and learn the safe way.", desc: "Avoid destructive commands when you can.", next: "start" }
+        ]
+      },
+      revert_misunderstanding: {
+        label: "SCENE 2B",
+        progress: 15,
+        log: `> git revert 7a8b9c0
+You created a NEW commit that undoes the work from 7a8b9c0.
+This doesn't let you browse the old code; it just erases its contribution.`,
+        title: "`revert` is for undoing, not for browsing.",
+        sub: "You wanted to look at the past, not change it. `revert` is for creating an 'undo' commit.",
+        options: [
+          { title: "Restart and use the right command.", desc: "Learn to browse history safely.", next: "start" }
+        ]
+      },
+      detached_head: {
+        label: "SCENE 2",
+        progress: 30,
+        log: `> git checkout 7a8b9c0
+Note: switching to '7a8b9c0'.
+You are in a 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branch by switching back to a branch.`,
+        title: "You are now in a 'detached HEAD' state.",
+        sub: "This sounds scary, but it's okay. It just means your `HEAD` (your current view) is pointing to a commit, not a branch. You can look around safely. While here, you find a bug and decide to fix it.",
+        options: [
+          { title: "Edit the file, then `git commit` the fix.", desc: "Make an experimental commit in this state.", next: "commit_in_detached" },
+          { title: "Immediately checkout `main` to escape this state.", desc: "Go back to safety before doing anything.", next: "checkout_main_early" }
+        ]
+      },
+      checkout_main_early: {
+        label: "SCENE 3A",
+        progress: 35,
+        log: `> git checkout main
+Switched back to branch 'main'.
+You're back on solid ground, but you didn't make any changes.`,
+        title: "You returned to `main`.",
+        sub: "This is a perfectly safe thing to do. The mission, however, is to see what happens when you commit before returning.",
+        options: [
+          { title: "Go back to the detached state and try committing.", desc: "Let's continue the experiment.", next: "detached_head" }
+        ]
+      },
+      commit_in_detached: {
+        label: "SCENE 3",
+        progress: 60,
+        log: `> git commit -am "hotfix for bug"
+[detached HEAD 3e4f5g6] hotfix for bug
+You have a new commit, but it doesn't belong to any branch.`,
+        title: "You've made a commit that's 'floating' in space.",
+        sub: "This new commit exists but no branch points to it. If you switch back to `main` now, this commit will be 'lost' (orphaned).",
+        options: [
+          { title: "git checkout main", desc: "Switch back to the `main` branch and see what happens.", next: "commit_is_lost" },
+          { title: "git checkout -b temp-hotfix", desc: "Create a new branch from this exact spot to 'save' your commit.", next: "saved_by_branch" }
+        ]
+      },
+      commit_is_lost: {
+        label: "SCENE 4A",
+        progress: 65,
+        log: `> git checkout main
+Warning: you are leaving 1 commit behind, not connected to
+any of your branches, which will be lost.
+Switched to branch 'main'
+Your hotfix commit has vanished.`,
+        title: "Your commit is now orphaned.",
+        sub: "Because no branch was pointing to your new commit, it's now 'lost'. Git will eventually clean it up. How could you have saved it?",
+        options: [
+          { title: "I should have created a branch before checking out `main`.", desc: "This is the key lesson.", next: "lost_commit_lesson" },
+          { title: "Use `git reflog` to find the lost commit and recover it.", desc: "The advanced recovery method.", next: "recover_with_reflog" }
+        ]
+      },
+      lost_commit_lesson: {
+        label: "SCENE 5A",
+        progress: 70,
+        log: `Correct. If you had created a branch, that branch would be pointing
+to your new commit, keeping it safe.`,
+        title: "Lesson: Branches save commits.",
+        sub: "A branch is just a pointer to a commit. By creating a branch at the location of your detached HEAD commit, you give it a name and a future.",
+        options: [
+          { title: "Let's try that again, the right way.", desc: "Restart the scenario from the detached commit.", next: "commit_in_detached" }
+        ]
+      },
+      recover_with_reflog: {
+        label: "SCENE 5B",
+        progress: 75,
+        log: `> git reflog
+...
+3e4f5g6 HEAD@{1}: commit: hotfix for bug
+...
+You found the lost commit hash in the reflog!`,
+        title: "Reflog to the rescue!",
+        sub: "Even 'lost' commits are tracked in the reflog for a while. You can use this hash to get it back.",
+        options: [
+          { title: "git checkout -b recovered-fix 3e4f5g6", desc: "Create a new branch pointing directly to the lost commit.", next: "saved_by_branch_advanced" }
+        ]
+      },
+      saved_by_branch_advanced: {
+        label: "SCENE 6A",
+        progress: 95,
+        log: `> git checkout -b recovered-fix 3e4f5g6
+You have successfully created a new branch and restored your lost commit.`,
+        title: "You are a Git wizard.",
+        sub: "Using reflog to recover an orphaned commit is an advanced and powerful skill.",
+        options: [
+          { title: "Mission Complete.", desc: "You have mastered recovering lost work.", next: "complete" }
+        ]
+      },
+      saved_by_branch: {
+        label: "SCENE 4",
+        progress: 95,
+        log: `> git checkout -b temp-hotfix
+Switched to a new branch 'temp-hotfix'
+Your commit is now safely on a new branch.`,
+        title: "You successfully saved your commit!",
+        sub: "By creating a branch while in the detached HEAD state, you gave your new commit a home. It is no longer floating in space and will not be lost.",
+        options: [
+          { title: "Mission accomplished.", desc: "You have survived the detached HEAD state.", next: "complete" }
+        ]
+      },
+      complete: {
+        complete: true,
+        progress: 100,
+        log: `You now have a new branch with your hotfix commit.
+You can now merge this branch back into 'main' or continue working on it.
+You defeated the 'detached HEAD' state.`
+      }
+    };
+
+    const OPTIMAL_STEPS = 3;
+    let currentScene = "start", totalSteps = 0;
+    const sceneId = document.getElementById("sceneId"), sceneTitle = document.getElementById("sceneTitle"), sceneSub = document.getElementById("sceneSub"), optionsEl = document.getElementById("options"), terminalLog = document.getElementById("terminalLog"), progressFill = document.getElementById("progressFill"), progressText = document.getElementById("progressText"), sceneArea = document.getElementById("sceneArea"), completeScreen = document.getElementById("completeScreen");
+
+    function renderScene(id) {
+      const scene = scenes[id];
+      currentScene = id;
+      terminalLog.textContent = scene.log || "";
+      progressFill.style.width = `${scene.progress || 0}%`;
+      progressText.textContent = `${scene.progress || 0}%`;
+
+      if (scene.complete) {
+        const score = Math.min(100, Math.round((OPTIMAL_STEPS / totalSteps) * 100));
+        document.getElementById("scoreValue").textContent = score + "%";
+        sceneArea.style.display = "none";
+        completeScreen.classList.add("show");
+        return;
+      }
+
+      sceneArea.style.display = "block";
+      completeScreen.classList.remove("show");
+      sceneId.textContent = scene.label || "SCENE";
+      sceneTitle.textContent = scene.title || "";
+      sceneSub.textContent = scene.sub || "";
+      optionsEl.innerHTML = "";
+
+      scene.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `<div class="option-title">${option.title}</div><div class="option-desc">${option.desc}</div>`;
+        btn.addEventListener("click", () => {
+          totalSteps++;
+          renderScene(option.next);
+        });
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function restartMission() { currentScene = "start"; totalSteps = 0; renderScene("start"); }
+    function shareMission() {
+      const score = document.getElementById("scoreValue").textContent;
+      const text = `I survived a Git Detached HEAD with a score of ${score}! #DevGameSim`;
+      navigator.clipboard.writeText(text).then(() => alert("Score copied to clipboard!"));
+    }
+    renderScene("start");
+  </script>
 </body>
 </html>

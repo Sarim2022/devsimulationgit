@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Not Responding | DEV GAME</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:#050505;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+}
+
+.container {
+  max-width:750px;
+  width:100%;
+  padding:20px;
+}
+
+.card {
+  background:#0c0c0c;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;
+  padding:20px;
+}
+
+h1 { margin-bottom:10px; }
+
+.terminal {
+  font-family:'JetBrains Mono',monospace;
+  background:#080808;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.08);
+  font-size:0.8rem;
+  margin-bottom:20px;
+  white-space:pre-line;
+}
+
+.options button {
+  width:100%;
+  margin-bottom:10px;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.08);
+  background:#111;
+  color:#fff;
+  cursor:pointer;
+  text-align:left;
+}
+
+.options button:hover {
+  background:#1a1a1a;
+}
+
+.complete {
+  display:none;
+  text-align:center;
+}
+.complete.show { display:block; }
+
+.btn {
+  margin-top:10px;
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:#111;
+  color:#fff;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="card">
+
+    <h1>API Not Responding 🚨</h1>
+
+    <div id="terminal" class="terminal"></div>
+    <div id="options" class="options"></div>
+
+    <div id="complete" class="complete">
+      <h2>✅ Fixed!</h2>
+      <p>You debugged the API like a real developer.</p>
+      <div style="font-family:monospace; margin:10px;">
+        check URL → fix endpoint → retry → success
+      </div>
+      <button class="btn" onclick="restart()">Play Again</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+const scenes = {
+
+start:{
+log:`User: "App not loading data"
+Console:
+GET https://api.myapp.com/data net::ERR_CONNECTION_REFUSED`,
+options:[
+{t:"Check API URL",n:"url"},
+{t:"Restart app",n:"restart"},
+{t:"Blame backend",n:"blame"}
+]
+},
+
+url:{
+log:`You inspect the API URL...
+
+Current:
+https://api.myapp.com/data
+
+Actual:
+https://api.prod.com/data ❌`,
+options:[
+{t:"Fix URL",n:"retry"},
+{t:"Ignore and retry",n:"fail1"}
+]
+},
+
+retry:{
+log:`API request sent...
+
+Response:
+Status: 404 Not Found`,
+options:[
+{t:"Check endpoint path",n:"endpoint"},
+{t:"Retry again",n:"fail2"}
+]
+},
+
+endpoint:{
+log:`You check endpoint...
+
+/data ❌
+/v1/data ✅`,
+options:[
+{t:"Fix endpoint",n:"success"},
+{t:"Call API again",n:"fail3"}
+]
+},
+
+success:{
+log:`GET /v1/data
+
+200 OK
+Data loaded successfully!`,
+complete:true
+},
+
+restart:{
+log:`App restarted...
+
+Still broken.`,
+options:[
+{t:"Now debug properly",n:"start"}
+]
+},
+
+blame:{
+log:`Backend team:
+"API is working fine 🙂"`,
+options:[
+{t:"Check again",n:"start"}
+]
+},
+
+fail1:{
+log:`Still failing...
+Same error.`,
+options:[
+{t:"Actually check URL",n:"url"}
+]
+},
+
+fail2:{
+log:`Retry doesn't fix wrong API.`,
+options:[
+{t:"Check endpoint",n:"endpoint"}
+]
+},
+
+fail3:{
+log:`Still 404...
+
+You didn't fix endpoint.`,
+options:[
+{t:"Fix properly",n:"endpoint"}
+]
+}
+
+};
+
+let current="start";
+
+function render(key){
+  const s=scenes[key];
+  current=key;
+
+  document.getElementById("terminal").textContent=s.log;
+
+  const opt=document.getElementById("options");
+  opt.innerHTML="";
+
+  if(s.complete){
+    document.getElementById("complete").classList.add("show");
+    opt.innerHTML="";
+    return;
+  }
+
+  document.getElementById("complete").classList.remove("show");
+
+  s.options.forEach(o=>{
+    const btn=document.createElement("button");
+    btn.innerText=o.t;
+    btn.onclick=()=>render(o.n);
+    opt.appendChild(btn);
+  });
+}
+
+function restart(){
+  render("start");
+}
+
+render("start");
+
+</script>
+
+</body>
+</html>

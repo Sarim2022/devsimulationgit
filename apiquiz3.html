@@ -1,58 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coming Soon | DEV GAME SIMULATION</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #050505;
-      color: #f5f5f5;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .wrap {
-      text-align: center;
-      padding: 40px 20px;
-    }
-    .wrap h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 14px;
-      color: #e5e7eb;
-    }
-    .wrap p {
-      color: #9ca3af;
-      font-size: 1rem;
-      margin-bottom: 24px;
-    }
-    .back-btn {
-      text-decoration: none;
-      color: #9ca3af;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: #0a0a0a;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 0.88rem;
-      transition: 0.2s ease;
-    }
-    .back-btn:hover {
-      color: #f5f5f5;
-      border-color: rgba(255,255,255,0.14);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>500 Server Error | DEV GAME</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:#050505;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+}
+
+.container {
+  max-width:750px;
+  width:100%;
+  padding:20px;
+}
+
+.card {
+  background:#0c0c0c;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;
+  padding:20px;
+}
+
+h1 { margin-bottom:10px; }
+
+.terminal {
+  font-family:'JetBrains Mono',monospace;
+  background:#080808;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.08);
+  font-size:0.8rem;
+  margin-bottom:20px;
+  white-space:pre-line;
+}
+
+.options button {
+  width:100%;
+  margin-bottom:10px;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.08);
+  background:#111;
+  color:#fff;
+  cursor:pointer;
+  text-align:left;
+}
+
+.options button:hover {
+  background:#1a1a1a;
+}
+
+.complete {
+  display:none;
+  text-align:center;
+}
+.complete.show { display:block; }
+
+.btn {
+  margin-top:10px;
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:#111;
+  color:#fff;
+  cursor:pointer;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>Coming Soon</h1>
-    <p>This mission is under development. Check back later.</p>
-    <a href="api.html" class="back-btn">← Go Back</a>
+
+<div class="container">
+  <div class="card">
+
+    <h1>500 Server Error 🚨</h1>
+
+    <div id="terminal" class="terminal"></div>
+    <div id="options" class="options"></div>
+
+    <div id="complete" class="complete">
+      <h2>✅ Fixed!</h2>
+      <p>You debugged the API like a real developer.</p>
+      <div style="font-family:monospace; margin:10px;">
+        check payload → fix data format → retry → success
+      </div>
+      <button class="btn" onclick="restart()">Play Again</button>
+    </div>
+
   </div>
+</div>
+
+<script>
+
+const scenes = {
+
+start:{
+log:`User: "Saving my profile fails!"
+Console:
+POST https://api.myapp.com/user/profile
+Status: 500 Internal Server Error`,
+options:[
+{t:"Check the payload being sent",n:"payload"},
+{t:"Retry the request",n:"retry_fail"},
+{t:"Ping the backend team",n:"ping_backend"}
+]
+},
+
+payload:{
+log:`You inspect the POST payload...
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "age": "twenty-five" // <-- Hmm, should this be a string?
+}`,
+options:[
+{t:"Check API documentation for 'age'",n:"docs"},
+{t:"Send it again, maybe it'll work",n:"retry_fail"}
+]
+},
+
+docs:{
+log:`You check the API docs for the /profile endpoint.
+
+- age (integer, required)
+
+The 'age' field must be a number. The server is likely failing to parse the string "twenty-five".`,
+options:[
+{t:"Fix the payload to send a number",n:"fix_payload"},
+{t:"Complain about strict types",n:"fail_complain"}
+]
+},
+
+fix_payload:{
+log:`You modify the code to ensure 'age' is a number.
+
+Payload:
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "age": 25
+}
+
+POST request sent...`,
+options:[
+{t:"Check response",n:"success"}
+]
+},
+
+success:{
+log:`POST /user/profile
+
+200 OK
+{ "message": "Profile updated successfully!" }
+
+It worked! The server just needed the data in the correct format.`,
+complete:true
+},
+
+retry_fail:{
+log:`You retry the request.
+
+Still 500. The server consistently fails on the bad data.`,
+options:[
+{t:"Okay, let's check the payload",n:"payload"}
+]
+},
+
+ping_backend:{
+log:`You message the backend team.
+
+They reply: "Seeing a crash in the user profile endpoint. Can you send us the exact payload your app is sending?"`,
+options:[
+{t:"Get the payload for them",n:"payload"}
+]
+},
+
+fail_complain:{
+log:`You complain, but the server doesn't care about your feelings. It only cares about data types.`,
+options:[
+{t:"Fine, I'll fix the payload",n:"fix_payload"}
+]
+}
+
+};
+
+let current="start";
+
+function render(key){
+  const s=scenes[key];
+  current=key;
+
+  document.getElementById("terminal").textContent=s.log;
+
+  const opt=document.getElementById("options");
+  opt.innerHTML="";
+
+  if(s.complete){
+    document.getElementById("complete").classList.add("show");
+    opt.innerHTML="";
+    return;
+  }
+
+  document.getElementById("complete").classList.remove("show");
+
+  s.options.forEach(o=>{
+    const btn=document.createElement("button");
+    btn.innerText=o.t;
+    btn.onclick=()=>render(o.n);
+    opt.appendChild(btn);
+  });
+}
+
+function restart(){
+  render("start");
+}
+
+render("start");
+
+</script>
+
 </body>
 </html>

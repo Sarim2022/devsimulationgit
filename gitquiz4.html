@@ -2,57 +2,250 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coming Soon | DEV GAME SIMULATION</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Save & Sync Request | DEV GAME SIMULATION</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --bg: #050505;
+      --card: #0c0c0c;
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.14);
+      --text: #f5f5f5;
+      --muted: #9ca3af;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       font-family: 'Inter', sans-serif;
-      background: #050505;
-      color: #f5f5f5;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
+      padding: 18px 14px 30px;
+    }
+
+    .container { max-width: 760px; margin: 0 auto; }
+
+    .topbar {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-    }
-    .wrap {
-      text-align: center;
-      padding: 40px 20px;
-    }
-    .wrap h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
+      gap: 10px;
+      flex-wrap: wrap;
       margin-bottom: 14px;
-      color: #e5e7eb;
     }
-    .wrap p {
-      color: #9ca3af;
-      font-size: 1rem;
-      margin-bottom: 24px;
-    }
+
     .back-btn {
       text-decoration: none;
-      color: #9ca3af;
-      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      border: 1px solid var(--border);
       background: #0a0a0a;
-      padding: 10px 18px;
+      padding: 8px 12px;
       border-radius: 999px;
-      font-size: 0.88rem;
+      font-size: 0.84rem;
       transition: 0.2s ease;
     }
+
     .back-btn:hover {
-      color: #f5f5f5;
-      border-color: rgba(255,255,255,0.14);
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    .tag {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.72rem;
+      color: #d1d5db;
+      border: 1px solid var(--border);
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #0a0a0a;
+    }
+
+    .hero {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #0b0b0b, #080808);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1 {
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .app {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #0b0b0b, #070707);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #111;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 8%;
+      background: linear-gradient(90deg, rgba(255,255,255,0.45), rgba(255,255,255,0.18));
+    }
+
+    .terminal {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.8rem;
+      background: #080808;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 14px;
+      white-space: pre-line;
+    }
+
+    .scene {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .option-btn {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #111;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .complete {
+      display: none;
+      text-align: center;
+    }
+
+    .complete.show {
+      display: block;
     }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>Coming Soon🐶</h1>
-    <p>This mission is under development. Check back later.</p>
-    <a href="github.html" class="back-btn">← Go Back</a>
+
+<div class="container">
+
+  <div class="topbar">
+    <a href="api.html" class="back-btn">← Back to API Missions</a>
+    <div class="tag">API STORY • INTERMEDIATE</div>
   </div>
+
+  <section class="hero">
+    <h1>Save & Sync API Request</h1>
+    <p>
+      You are working on a form submission API.  
+      Your frontend has unsent data, but backend schema just changed.  
+      You must sync latest API without losing user data.
+    </p>
+  </section>
+
+  <section class="app">
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="terminal" id="terminalLog">
+User has unsaved form data...
+Backend API updated...
+    </div>
+
+    <div id="sceneArea" class="scene">
+      <h3 id="sceneTitle"></h3>
+      <p id="sceneSub"></p>
+      <div id="options"></div>
+    </div>
+
+    <div class="complete" id="completeScreen">
+      <h2>✅ Mission Complete</h2>
+      <p>You safely stored user data, updated API, and restored flow.</p>
+    </div>
+
+  </section>
+</div>
+
+<script>
+const scenes = {
+  start: {
+    title: "API changed but user data not saved",
+    sub: "What will you do?",
+    options: [
+      { text: "Store data in localStorage", next: "saved" },
+      { text: "Refresh page directly", next: "lost" }
+    ]
+  },
+  saved: {
+    title: "Data saved locally",
+    sub: "Now update API safely",
+    options: [
+      { text: "Fetch latest API", next: "complete" }
+    ]
+  },
+  lost: {
+    title: "Data lost ❌",
+    sub: "Bad move. Restart.",
+    options: [
+      { text: "Restart", next: "start" }
+    ]
+  },
+  complete: {
+    complete: true
+  }
+};
+
+function renderScene(key){
+  const scene = scenes[key];
+
+  if(scene.complete){
+    document.getElementById("sceneArea").style.display="none";
+    document.getElementById("completeScreen").classList.add("show");
+    return;
+  }
+
+  document.getElementById("sceneTitle").textContent = scene.title;
+  document.getElementById("sceneSub").textContent = scene.sub;
+
+  const optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+
+  scene.options.forEach(opt=>{
+    const btn = document.createElement("button");
+    btn.className="option-btn";
+    btn.textContent = opt.text;
+    btn.onclick = ()=> renderScene(opt.next);
+    optionsDiv.appendChild(btn);
+  });
+}
+
+renderScene("start");
+</script>
+
 </body>
 </html>

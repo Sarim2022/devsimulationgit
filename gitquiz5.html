@@ -3,56 +3,331 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coming Soon | DEV GAME SIMULATION</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>Branch Survival Mission | DEV GAME SIMULATION</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #050505;
+      --card: #0c0c0c;
+      --border: rgba(255,255,255,0.08);
+      --text: #f5f5f5;
+      --muted: #9ca3af;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       font-family: 'Inter', sans-serif;
-      background: #050505;
-      color: #f5f5f5;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 18px 14px 30px;
     }
-    .wrap {
-      text-align: center;
-      padding: 40px 20px;
-    }
-    .wrap h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 14px;
-      color: #e5e7eb;
-    }
-    .wrap p {
-      color: #9ca3af;
-      font-size: 1rem;
-      margin-bottom: 24px;
-    }
-    .back-btn {
-      text-decoration: none;
-      color: #9ca3af;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: #0a0a0a;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 0.88rem;
-      transition: 0.2s ease;
-    }
-    .back-btn:hover {
-      color: #f5f5f5;
-      border-color: rgba(255,255,255,0.14);
-    }
+
+    .container { max-width: 760px; margin: 0 auto; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .back-btn { text-decoration: none; color: var(--muted); border: 1px solid var(--border); background: #0a0a0a; padding: 8px 12px; border-radius: 999px; font-size: 0.84rem; transition: 0.2s ease; }
+    .back-btn:hover { color: var(--text); border-color: var(--border-strong); }
+    .tag { font-family: "JetBrains Mono", monospace; font-size: 0.72rem; color: #d1d5db; border: 1px solid var(--border); padding: 7px 10px; border-radius: 999px; background: #0a0a0a; }
+    .hero { border: 1px solid var(--border); background: linear-gradient(180deg, #0b0b0b, #080808); border-radius: 18px; padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); }
+    .hero h1 { font-size: clamp(1.3rem, 3vw, 2rem); font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; }
+    .hero p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    .app { border: 1px solid var(--border); background: linear-gradient(180deg, #0b0b0b, #070707); border-radius: 18px; padding: 14px; box-shadow: var(--shadow); }
+    .progress-wrap { margin-bottom: 14px; }
+    .progress-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; font-size: 0.8rem; color: var(--muted); }
+    .progress-bar { height: 8px; background: #111; border-radius: 999px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04); }
+    .progress-fill { height: 100%; width: 8%; background: linear-gradient(90deg, rgba(255,255,255,0.45), rgba(255,255,255,0.18)); border-radius: 999px; transition: width 0.25s ease; }
+    .terminal { font-family: "JetBrains Mono", monospace; font-size: 0.78rem; line-height: 1.6; background: #080808; border: 1px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 14px; color: #d1d5db; min-height: 60px; white-space: pre-line; }
+    .scene { border: 1px solid var(--border); background: var(--card); border-radius: 16px; padding: 14px; }
+    .scene-id { display: inline-block; font-family: "JetBrains Mono", monospace; font-size: 0.68rem; color: #d1d5db; border: 1px solid rgba(255,255,255,0.08); background: #0a0a0a; border-radius: 999px; padding: 5px 8px; margin-bottom: 10px; }
+    .scene-title { font-size: 1.08rem; font-weight: 700; line-height: 1.45; margin-bottom: 8px; }
+    .scene-sub { color: var(--muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 14px; }
+    .options { display: grid; gap: 10px; }
+    .option-btn { width: 100%; border: 1px solid var(--border); background: linear-gradient(180deg, #111, #0d0d0d); color: var(--text); border-radius: 14px; padding: 12px; text-align: left; cursor: pointer; transition: 0.18s ease; font-family: inherit; }
+    .option-btn:hover { border-color: var(--border-strong); transform: translateY(-1px); background: #131313; }
+    .option-title { font-size: 0.92rem; font-weight: 700; margin-bottom: 4px; }
+    .option-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.45; }
+    .complete { display: none; border: 1px solid rgba(34,197,94,0.2); background: rgba(34,197,94,0.05); border-radius: 16px; padding: 16px; text-align: center; }
+    .complete.show { display: block; }
+    .complete h2 { font-size: 1.3rem; margin-bottom: 8px; }
+    .complete p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px; }
+    .code { font-family: "JetBrains Mono", monospace; font-size: 0.8rem; background: #0a0a0a; border: 1px solid var(--border); border-radius: 12px; padding: 10px; color: #e5e7eb; display: inline-block; margin-bottom: 12px; }
+    .restart-btn { border: 1px solid var(--border); background: #111; color: var(--text); border-radius: 12px; padding: 10px 14px; cursor: pointer; font-weight: 600; }
+    .restart-btn:hover { border-color: var(--border-strong); }
+    .score-wrap { margin-bottom: 16px; }
+    .score-value { font-size: 2.6rem; font-weight: 800; color: #22c55e; letter-spacing: -0.03em; }
+    .score-label { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+    .share-btn { border: 1px solid rgba(34,197,94,0.3); background: rgba(34,197,94,0.1); color: #22c55e; border-radius: 12px; padding: 12px 22px; cursor: pointer; font-weight: 600; font-size: 0.92rem; font-family: inherit; margin-top: 8px; transition: 0.2s ease; display: inline-flex; align-items: center; gap: 8px; }
+    .share-btn:hover { background: rgba(34,197,94,0.18); border-color: rgba(34,197,94,0.5); }
+    .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Coming Soon🐶</h1>
-    <p>This mission is under development. Check back later.</p>
-    <a href="github.html" class="back-btn">← Go Back</a>
+  <div class="container">
+    <div class="topbar">
+      <a href="github.html" class="back-btn">← Back to GitHub Missions</a>
+      <div class="tag">BEGINNER+ / BRANCHING STORY</div>
+    </div>
+
+    <section class="hero">
+      <h1>Branch Survival Mission</h1>
+      <p>
+        Your TL says: <strong>"Start working on the new login feature. Create a branch for it."</strong>
+        This is a fundamental Git skill: work on a new feature without breaking the main codebase. Don't be the dev who works directly on `main`.
+      </p>
+    </section>
+
+    <section class="app">
+      <div class="progress-wrap">
+        <div class="progress-head"><span>Mission Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <div class="terminal" id="terminalLog">You are on the `main` branch. Time to start a new feature.</div>
+      <div id="sceneArea" class="scene">
+        <div class="scene-id" id="sceneId">SCENE</div>
+        <div class="scene-title" id="sceneTitle"></div>
+        <div class="scene-sub" id="sceneSub"></div>
+        <div class="options" id="options"></div>
+      </div>
+      <div class="complete" id="completeScreen">
+        <h2>✅ Mission Complete</h2>
+        <div class="score-wrap"><div class="score-value" id="scoreValue">100%</div><div class="score-label">Git Status Score</div></div>
+        <p>You have mastered the art of branching. You created a safe space for your work, made commits, and didn't touch the `main` branch directly.</p>
+        <div class="code">git branch feature/login → git checkout feature/login</div>
+        <div class="btn-row">
+          <button class="share-btn" onclick="shareMission()">↗ Share Score</button>
+          <button class="restart-btn" onclick="restartMission()">Play Again</button>
+        </div>
+      </div>
+    </section>
   </div>
+
+  <script>
+    const scenes = {
+      start: {
+        label: "SCENE 1",
+        progress: 10,
+        log: `You are on the 'main' branch, which is clean and up to date.
+TL wants you to start the 'login' feature.`,
+        title: "You need to start a new feature. What's the first step?",
+        sub: "You should never work directly on `main`. You need to create a separate, safe space for your new code.",
+        options: [
+          { title: "git checkout -b feature/login", desc: "Create a new branch and switch to it in one command.", next: "on_feature_branch" },
+          { title: "git branch feature/login", desc: "Create the new branch, but don't switch to it yet.", next: "created_branch_not_on_it" },
+          { title: "Start editing files directly on the `main` branch.", desc: "A dangerous path. What if your code breaks something?", next: "editing_on_main" },
+          { title: "git commit -m \"start login feature\"", desc: "Try to commit on `main` before doing any work.", next: "commit_on_main" }
+        ]
+      },
+      editing_on_main: {
+        label: "SCENE 2A",
+        progress: 15,
+        log: `You start editing files.
+> git status
+On branch main
+Changes not staged for commit:
+        modified:   app.js`,
+        title: "You're working directly on `main`.",
+        sub: "This is risky. If you push broken code to `main`, you can block the whole team. This is why branches exist.",
+        options: [
+          { title: "Realize my mistake, stash my changes, and create a branch.", desc: "Good recovery. Save your work and move to a branch.", next: "recover_with_stash" },
+          { title: "Keep going and commit to `main`.", desc: "Double down on the risky strategy.", next: "commit_on_main_with_changes" }
+        ]
+      },
+      commit_on_main_with_changes: {
+        label: "SCENE 3A",
+        progress: 20,
+        log: `> git commit -am "added login button"
+[main a1b2c3d] added login button
+You've committed a feature directly to main.`,
+        title: "You committed a feature directly to the `main` branch.",
+        sub: "This is a common junior developer mistake. In a real team, this would be highly discouraged. The correct workflow is to use a feature branch for review.",
+        options: [
+          { title: "Try to fix this by creating a branch now and reverting main.", desc: "A complex but educational recovery.", next: "complex_recovery" },
+          { title: "Push to main and hope nobody gets mad.", desc: "They will get mad.", next: "push_to_main" }
+        ]
+      },
+      push_to_main: {
+          label: "SCENE 4A",
+          progress: 25,
+          log: `Later in chat...
+TL: "Who pushed directly to main? All feature work needs a pull request."`,
+          title: "You broke the team's workflow.",
+          sub: "Feature branches and pull requests are there for a reason: code review, automated checks, and safety.",
+          options: [
+              { title: "Apologize and learn the branch workflow.", desc: "The only way forward.", next: "start"}
+          ]
+      },
+      complex_recovery: {
+          label: "SCENE 4B",
+          progress: 30,
+          log: `You're about to attempt a tricky sequence:
+1. Create a branch from your current position.
+2. Reset the main branch back to before your commit.
+This saves your work but cleans up main.`,
+          title: "This is an advanced recovery.",
+          sub: "It shows good intent, but it would have been much easier to use a branch from the start.",
+          options: [
+              { title: "Let's just restart and learn the simple path.", desc: "The easy way is the best way here.", next: "start"}
+          ]
+      },
+      recover_with_stash: {
+        label: "SCENE 3B",
+        progress: 35,
+        log: `> git stash
+Saved your work.
+> git checkout -b feature/login
+Switched to a new branch 'feature/login'
+> git stash pop
+Restored your work.`,
+        title: "Excellent recovery!",
+        sub: "You expertly saved your work, moved to a proper feature branch, and then restored your work. You are now safe.",
+        options: [
+          { title: "Continue working on the feature branch.", desc: "Mission back on track.", next: "work_on_feature_branch" }
+        ]
+      },
+      commit_on_main: {
+        label: "SCENE 2B",
+        progress: 12,
+        log: `> git commit -m "start login feature"
+nothing to commit, working tree clean`,
+        title: "Nothing to commit.",
+        sub: "You haven't made any changes yet, and you're still on `main`. What should you do first?",
+        options: [
+          { title: "Create a branch for my new feature.", desc: "Correct. Isolate your work.", next: "start" }
+        ]
+      },
+      created_branch_not_on_it: {
+        label: "SCENE 2C",
+        progress: 25,
+        log: `> git branch feature/login
+> git branch
+* main
+  feature/login`,
+        title: "You created the branch, but you're not on it.",
+        sub: "Your active branch is still `main` (indicated by the `*`). If you start coding now, you'll still be working on `main`.",
+        options: [
+          { title: "git checkout feature/login", desc: "Switch to the branch you just created.", next: "on_feature_branch" },
+          { title: "Start coding anyway", desc: "This will be on the wrong branch.", next: "editing_on_main" }
+        ]
+      },
+      on_feature_branch: {
+        label: "SCENE 2",
+        progress: 50,
+        log: `> git checkout -b feature/login
+Switched to a new branch 'feature/login'`,
+        title: "You are now on a new, safe feature branch.",
+        sub: "Any work you do here will not affect `main` until you're ready to merge it. You can now work on the feature.",
+        options: [
+          { title: "Edit files, add code for the login feature.", desc: "Do the actual work.", next: "work_on_feature_branch" }
+        ]
+      },
+      work_on_feature_branch: {
+        label: "SCENE 3",
+        progress: 75,
+        log: `You've added the new login component and styles.
+> git status
+On branch feature/login
+Changes not staged for commit:
+        modified:   app.js
+        new file:   Login.js`,
+        title: "You've made changes on your feature branch.",
+        sub: "Your work is isolated and safe. What's the next logical step in this feature workflow?",
+        options: [
+          { title: "git add .", desc: "Stage your changes for commit.", next: "staged_on_branch" },
+          { title: "git checkout main", desc: "Switch back to main for some reason.", next: "switch_back_to_main" }
+        ]
+      },
+      switch_back_to_main: {
+        label: "SCENE 4C",
+        progress: 78,
+        log: `> git checkout main
+error: Your local changes to the following files would be overwritten by checkout:
+        app.js
+Please commit your changes or stash them before you switch branches.`,
+        title: "Git stopped you from losing your work.",
+        sub: "You have uncommitted changes on this branch. If you switched to `main`, those changes could get lost or mixed up. You must deal with them first.",
+        options: [
+          { title: "Commit the changes on my feature branch first.", desc: "Correct. Save your work before switching.", next: "staged_on_branch" }
+        ]
+      },
+      staged_on_branch: {
+        label: "SCENE 4",
+        progress: 90,
+        log: `> git add .
+Your changes are staged.`,
+        title: "Changes are staged on your feature branch.",
+        sub: "Now, create a commit to save this point in history.",
+        options: [
+          { title: "git commit -m \"feat: add login component\"", desc: "Commit your work with a clear message.", next: "committed_on_branch" }
+        ]
+      },
+      committed_on_branch: {
+        label: "SCENE 5",
+        progress: 95,
+        log: `> git commit -m "feat: add login component"
+[feature/login 3d4e5f6] feat: add login component
+ 2 files changed, 50 insertions(+)`,
+        title: "You've successfully committed to your feature branch.",
+        sub: "Your work is saved, and `main` is still clean and untouched. You have successfully followed the branching workflow.",
+        options: [
+          { title: "Mission accomplished.", desc: "You have mastered the basic branching workflow.", next: "complete" }
+        ]
+      },
+      complete: {
+        complete: true,
+        progress: 100,
+        log: `You're on a clean feature branch with your new commit.
+The 'main' branch remains untouched and stable.
+TL: "Great, when you're done, open a Pull Request."`
+      }
+    };
+
+    const OPTIMAL_STEPS = 4;
+    let currentScene = "start", totalSteps = 0;
+    const sceneId = document.getElementById("sceneId"), sceneTitle = document.getElementById("sceneTitle"), sceneSub = document.getElementById("sceneSub"), optionsEl = document.getElementById("options"), terminalLog = document.getElementById("terminalLog"), progressFill = document.getElementById("progressFill"), progressText = document.getElementById("progressText"), sceneArea = document.getElementById("sceneArea"), completeScreen = document.getElementById("completeScreen");
+
+    function renderScene(id) {
+      const scene = scenes[id];
+      currentScene = id;
+      terminalLog.textContent = scene.log || "";
+      progressFill.style.width = `${scene.progress || 0}%`;
+      progressText.textContent = `${scene.progress || 0}%`;
+
+      if (scene.complete) {
+        const score = Math.min(100, Math.round((OPTIMAL_STEPS / totalSteps) * 100));
+        document.getElementById("scoreValue").textContent = score + "%";
+        sceneArea.style.display = "none";
+        completeScreen.classList.add("show");
+        return;
+      }
+
+      sceneArea.style.display = "block";
+      completeScreen.classList.remove("show");
+      sceneId.textContent = scene.label || "SCENE";
+      sceneTitle.textContent = scene.title || "";
+      sceneSub.textContent = scene.sub || "";
+      optionsEl.innerHTML = "";
+
+      scene.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `<div class="option-title">${option.title}</div><div class="option-desc">${option.desc}</div>`;
+        btn.addEventListener("click", () => {
+          totalSteps++;
+          renderScene(option.next);
+        });
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function restartMission() { currentScene = "start"; totalSteps = 0; renderScene("start"); }
+    function shareMission() {
+      const score = document.getElementById("scoreValue").textContent;
+      const text = `I survived the Git Branch Survival Mission with a score of ${score}! #DevGameSim`;
+      navigator.clipboard.writeText(text).then(() => alert("Score copied to clipboard!"));
+    }
+    renderScene("start");
+  </script>
 </body>
 </html>
