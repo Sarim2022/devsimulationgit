@@ -1,0 +1,11 @@
+This project is a web-based "Dev Reality Simulator" designed as a learning platform for developers. It uses interactive, story-based branching quizzes to teach real-world development skills.
+
+The main entry point is `index.html`, which presents a splash screen and then a main menu. From the main menu, users can choose from different learning tracks:
+
+- GitHub
+- API
+- SQL
+
+Each track consists of a series of quizzes presented as real-world scenarios. The user's choices determine the path of the story, even incorrect answers lead to new challenges, simulating a real debugging and development workflow.
+
+The project is structured as a collection of HTML files, with `index.html` as the main hub. The quiz files (e.g., `gitquiz1.html`, `apiquiz1.html`, `sqlquiz1.html`, etc.) are linked from the respective track pages (`github.html`, `API.html`, `SQL.html`). The UI is designed to be minimal and developer-focused to encourage logical thinking.
