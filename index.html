@@ -266,7 +266,7 @@
 
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 22px;
       margin-bottom: 36px;
     }
@@ -386,7 +386,7 @@
 
     @media (max-width: 980px) {
       .cards-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
       }
 
       .dev-card {
@@ -513,6 +513,19 @@
           <p>Joins. Filters. Missing rows. Production nightmares.</p>
           <div class="card-footer">
             <span>Mode: Data Survival</span>
+            <span class="arrow">→</span>
+          </div>
+        </button>
+
+        <button class="dev-card" onclick="window.location.href='DDEH.html'">
+          <div class="card-top">
+            <span class="card-icon">🐞</span>
+            <span class="card-status">AVAILABLE</span>
+          </div>
+          <h2>Debugging & Error Handling</h2>
+          <p>Null pointers. Stack traces. Cryptic errors. Survive the chaos.</p>
+          <div class="card-footer">
+            <span>Mode: Bug Squashing</span>
             <span class="arrow">→</span>
           </div>
         </button>

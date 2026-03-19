@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Null Pointer | DEV GAME SIMULATION</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050505;
+      --card: #0c0c0c;
+      --card-2: #101010;
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.14);
+      --text: #f5f5f5;
+      --muted: #9ca3af;
+      --accent: #e5e7eb;
+      --green: #22c55e;
+      --red: #ef4444;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 18px 14px 30px;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      background: #0a0a0a;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      transition: 0.2s ease;
+    }
+
+    .back-btn:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    .tag {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.72rem;
+      color: #d1d5db;
+      border: 1px solid var(--border);
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #0a0a0a;
+    }
+
+    .hero {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #0b0b0b, #080808);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1 {
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .app {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #0b0b0b, #070707);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .progress-wrap {
+      margin-bottom: 14px;
+    }
+
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #111;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 8%;
+      background: linear-gradient(90deg, rgba(255,255,255,0.45), rgba(255,255,255,0.18));
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .terminal {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      background: #080808;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 14px;
+      color: #d1d5db;
+      min-height: 60px;
+      white-space: pre-line;
+    }
+
+    .scene {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .scene-id {
+      display: inline-block;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.68rem;
+      color: #d1d5db;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #0a0a0a;
+      border-radius: 999px;
+      padding: 5px 8px;
+      margin-bottom: 10px;
+    }
+
+    .scene-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      line-height: 1.45;
+      margin-bottom: 8px;
+    }
+
+    .scene-sub {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .option-btn {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #111, #0d0d0d);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.18s ease;
+      font-family: inherit;
+    }
+
+    .option-btn:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+      background: #131313;
+    }
+
+    .option-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .option-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .complete {
+      display: none;
+      border: 1px solid rgba(34,197,94,0.2);
+      background: rgba(34,197,94,0.05);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .complete.show {
+      display: block;
+    }
+
+    .complete h2 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .complete p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .code {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.8rem;
+      background: #0a0a0a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      color: #e5e7eb;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .restart-btn {
+      border: 1px solid var(--border);
+      background: #111;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .restart-btn:hover {
+      border-color: var(--border-strong);
+    }
+
+    .score-wrap {
+      margin-bottom: 16px;
+    }
+
+    .score-value {
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: #22c55e;
+      letter-spacing: -0.03em;
+    }
+
+    .score-label {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .share-btn {
+      border: 1px solid rgba(34,197,94,0.3);
+      background: rgba(34,197,94,0.1);
+      color: #22c55e;
+      border-radius: 12px;
+      padding: 12px 22px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.92rem;
+      font-family: inherit;
+      margin-top: 8px;
+      transition: 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .share-btn:hover {
+      background: rgba(34,197,94,0.18);
+      border-color: rgba(34,197,94,0.5);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .hero, .app, .scene {
+        padding: 12px;
+      }
+
+      .option-btn {
+        padding: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <a href="DDEH.html" class="back-btn">← Back to Debugging Missions</a>
+      <div class="tag">BEGINNER+ / BRANCHING STORY</div>
+    </div>
+
+    <section class="hero">
+      <h1>The Null Pointer</h1>
+      <p>
+        A classic null pointer exception. Find it and fix it.
+      </p>
+    </section>
+
+    <section class="app">
+      <div class="progress-wrap">
+        <div class="progress-head">
+          <span>Mission Progress</span>
+          <span id="progressText">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="terminal" id="terminalLog">
+The application is not behaving as expected...
+      </div>
+
+      <div id="sceneArea" class="scene">
+        <div class="scene-id" id="sceneId">SCENE</div>
+        <div class="scene-title" id="sceneTitle"></div>
+        <div class="scene-sub" id="sceneSub"></div>
+        <div class="options" id="options"></div>
+      </div>
+
+      <div class="complete" id="completeScreen">
+        <h2>✅ Mission Complete</h2>
+        <div class="score-wrap">
+          <div class="score-value" id="scoreValue">100%</div>
+          <div class="score-label">Debugging Score</div>
+        </div>
+        <p>
+          You've successfully squashed the null pointer bug!
+        </p>
+        <div class="btn-row">
+          <button class="share-btn" onclick="shareMission()">↗ Share Score</button>
+          <button class="restart-btn" onclick="restartMission()">Play Again</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Placeholder script
+    const scenes = {
+      start: {
+        label: "SCENE 1",
+        progress: 50,
+        log: `Something is wrong...`,
+        title: `The application is not working correctly.`,
+        sub: "What is your first step?",
+        options: [
+          {
+            title: "Restart the application",
+            desc: "Maybe it's a temporary issue.",
+            next: "complete"
+          },
+          {
+            title: "Check the logs",
+            desc: "Look for error messages.",
+            next: "complete"
+          },
+          {
+            title: "Panic",
+            desc: "This is not a productive step.",
+            next: "complete"
+          }
+        ]
+      },
+      complete: {
+        complete: true,
+        progress: 100,
+        log: `You fixed the bug!`
+      }
+    };
+
+    const sceneId = document.getElementById("sceneId");
+    const sceneTitle = document.getElementById("sceneTitle");
+    const sceneSub = document.getElementById("sceneSub");
+    const optionsEl = document.getElementById("options");
+    const terminalLog = document.getElementById("terminalLog");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const sceneArea = document.getElementById("sceneArea");
+    const completeScreen = document.getElementById("completeScreen");
+
+    function renderScene(id) {
+      const scene = scenes[id];
+
+      terminalLog.textContent = scene.log || "";
+      progressFill.style.width = `${scene.progress || 0}%`;
+      progressText.textContent = `${scene.progress || 0}%`;
+
+      if (scene.complete) {
+        document.getElementById("scoreValue").textContent = "100%";
+        sceneArea.style.display = "none";
+        completeScreen.classList.add("show");
+        return;
+      }
+
+      sceneArea.style.display = "block";
+      completeScreen.classList.remove("show");
+
+      sceneId.textContent = scene.label || "SCENE";
+      sceneTitle.textContent = scene.title || "";
+      sceneSub.textContent = scene.sub || "";
+      optionsEl.innerHTML = "";
+
+      scene.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `
+          <div class="option-title">${option.title}</div>
+          <div class="option-desc">${option.desc}</div>
+        `;
+        btn.addEventListener("click", () => {
+          renderScene(option.next);
+        });
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function restartMission() {
+      renderScene("start");
+    }
+
+    function shareMission() {
+      const score = document.getElementById("scoreValue").textContent;
+      const text = `My debugging score is : ${score}
+what's yours check it
+https://sarim2022.github.io/devsimulationgit/`;
+      if (navigator.share) {
+        navigator.share({ text: text }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Score copied to clipboard!");
+        });
+      }
+    }
+
+    renderScene("start");
+  </script>
+</body>
+</html>

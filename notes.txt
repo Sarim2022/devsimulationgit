@@ -2,9 +2,19 @@ This project is a web-based "Dev Reality Simulator" designed as a learning platf
 
 The main entry point is `index.html`, which presents a splash screen and then a main menu. From the main menu, users can choose from different learning tracks:
 
+implment done 
 - GitHub
 - API
 - SQL
+
+needs to implement
+-  Debugging & Error Handling
+- Frontend (HTML, CSS, JS)
+- Backend
+- Authentication & Security
+- Mobile Development native
+- DSA
+- Security
 
 Each track consists of a series of quizzes presented as real-world scenarios. The user's choices determine the path of the story, even incorrect answers lead to new challenges, simulating a real debugging and development workflow.
 
