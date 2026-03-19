@@ -2,57 +2,215 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coming Soon | DEV GAME SIMULATION</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Slow API Nightmare | DEV GAME SIMULATION</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:#050505;
+      --card:#0c0c0c;
+      --border:rgba(255,255,255,0.08);
+      --border-strong:rgba(255,255,255,0.14);
+      --text:#f5f5f5;
+      --muted:#9ca3af;
+      --success:#22c55e;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: #050505;
-      color: #f5f5f5;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-family:'Inter',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:20px;
     }
-    .wrap {
-      text-align: center;
-      padding: 40px 20px;
+
+    .container { max-width:760px; margin:auto; }
+
+    .topbar {
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:15px;
     }
-    .wrap h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 14px;
-      color: #e5e7eb;
+
+    .back {
+      text-decoration:none;
+      color:var(--muted);
+      border:1px solid var(--border);
+      padding:8px 12px;
+      border-radius:999px;
     }
-    .wrap p {
-      color: #9ca3af;
-      font-size: 1rem;
-      margin-bottom: 24px;
+
+    .tag {
+      font-size:12px;
+      border:1px solid var(--border);
+      padding:6px 10px;
+      border-radius:999px;
     }
-    .back-btn {
-      text-decoration: none;
-      color: #9ca3af;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: #0a0a0a;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 0.88rem;
-      transition: 0.2s ease;
+
+    .hero {
+      border:1px solid var(--border);
+      padding:16px;
+      border-radius:16px;
+      margin-bottom:14px;
+      background:#0b0b0b;
     }
-    .back-btn:hover {
-      color: #f5f5f5;
-      border-color: rgba(255,255,255,0.14);
+
+    .hero h1 { margin-bottom:8px; }
+    .hero p { color:var(--muted); font-size:0.9rem; }
+
+    .terminal {
+      background:#080808;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+      font-family:"JetBrains Mono", monospace;
+      font-size:0.8rem;
+      margin-bottom:14px;
+      white-space:pre-line;
     }
+
+    .scene {
+      border:1px solid var(--border);
+      padding:14px;
+      border-radius:14px;
+      background:var(--card);
+    }
+
+    .option {
+      border:1px solid var(--border);
+      padding:10px;
+      margin-top:10px;
+      border-radius:10px;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .option:hover {
+      border-color:var(--border-strong);
+      background:#111;
+    }
+
+    .complete {
+      display:none;
+      text-align:center;
+      margin-top:20px;
+    }
+
+    .complete.show { display:block; }
+
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>Coming Soon</h1>
-    <p>This mission is under development. Check back later.</p>
-    <a href="api.html" class="back-btn">← Go Back</a>
+
+<div class="container">
+
+  <div class="topbar">
+    <a href="api.html" class="back">← Back</a>
+    <div class="tag">MISSION 04 • INTERMEDIATE</div>
   </div>
+
+  <div class="hero">
+    <h1>Slow API Nightmare</h1>
+    <p>Your app is working… but users complain it's VERY slow. Fix performance without breaking functionality.</p>
+  </div>
+
+  <div class="terminal" id="terminal">
+Fetching /users...
+Response time: 4.8s ⚠️
+Fetching /posts...
+Response time: 3.9s ⚠️
+  </div>
+
+  <div class="scene" id="scene"></div>
+
+  <div class="complete" id="complete">
+    <h2>✅ Optimized!</h2>
+    <p>You reduced API calls and improved performance like a real dev.</p>
+  </div>
+
+</div>
+
+<script>
+
+const scenes = {
+  start: {
+    title: "Multiple slow API calls detected",
+    options: [
+      { text:"Call APIs one by one", next:"bad1" },
+      { text:"Use Promise.all()", next:"good1" },
+      { text:"Increase timeout", next:"bad2" }
+    ]
+  },
+
+  bad1: {
+    title: "Still slow ❌ Sequential calls waste time",
+    options: [
+      { text:"Try parallel calls", next:"good1" }
+    ]
+  },
+
+  bad2: {
+    title: "Timeout increased but still slow ❌",
+    options: [
+      { text:"Optimize calls instead", next:"good1" }
+    ]
+  },
+
+  good1: {
+    title: "Parallel API calls improved speed",
+    options: [
+      { text:"Fetch unnecessary data", next:"bad3" },
+      { text:"Request only needed fields", next:"good2" }
+    ]
+  },
+
+  bad3: {
+    title: "Too much data slows response ❌",
+    options: [
+      { text:"Optimize payload", next:"good2" }
+    ]
+  },
+
+  good2: {
+    title: "Optimized payload ✅",
+    options: [
+      { text:"Cache response", next:"complete" }
+    ]
+  },
+
+  complete: {
+    complete:true
+  }
+};
+
+function render(key){
+  const scene = scenes[key];
+
+  if(scene.complete){
+    document.getElementById("scene").style.display="none";
+    document.getElementById("complete").classList.add("show");
+    return;
+  }
+
+  const el = document.getElementById("scene");
+  el.innerHTML = `<h3>${scene.title}</h3>`;
+
+  scene.options.forEach(opt=>{
+    const div = document.createElement("div");
+    div.className="option";
+    div.textContent = opt.text;
+    div.onclick=()=>render(opt.next);
+    el.appendChild(div);
+  });
+}
+
+render("start");
+
+</script>
+
 </body>
 </html>
