@@ -2,57 +2,287 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coming Soon | DEV GAME SIMULATION</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Revenue Report | DEV GAME SIMULATION</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #050505;
-      color: #f5f5f5;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    :root {
+      --bg:#050505;
+      --card:#0c0c0c;
+      --border:rgba(255,255,255,0.08);
+      --border-strong:rgba(255,255,255,0.14);
+      --text:#f5f5f5;
+      --muted:#9ca3af;
+      --green:#22c55e;
     }
-    .wrap {
-      text-align: center;
-      padding: 40px 20px;
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+
+    body{
+      font-family:'Inter',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:18px;
     }
-    .wrap h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 14px;
-      color: #e5e7eb;
+
+    .container{max-width:760px;margin:auto;}
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:14px;
     }
-    .wrap p {
-      color: #9ca3af;
-      font-size: 1rem;
-      margin-bottom: 24px;
+
+    .back-btn{
+      text-decoration:none;
+      color:var(--muted);
+      border:1px solid var(--border);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:0.8rem;
     }
-    .back-btn {
-      text-decoration: none;
-      color: #9ca3af;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: #0a0a0a;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 0.88rem;
-      transition: 0.2s ease;
+
+    .tag{
+      font-family:"JetBrains Mono";
+      font-size:0.7rem;
+      border:1px solid var(--border);
+      padding:6px 10px;
+      border-radius:999px;
     }
-    .back-btn:hover {
-      color: #f5f5f5;
-      border-color: rgba(255,255,255,0.14);
+
+    .hero,.app{
+      border:1px solid var(--border);
+      background:#0b0b0b;
+      border-radius:16px;
+      padding:14px;
+      margin-bottom:14px;
+    }
+
+    .hero h1{font-size:1.5rem;margin-bottom:6px;}
+    .hero p{color:var(--muted);font-size:0.9rem;}
+
+    .terminal{
+      font-family:"JetBrains Mono";
+      font-size:0.8rem;
+      background:#080808;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px;
+      margin-bottom:12px;
+      white-space:pre-line;
+    }
+
+    .scene{
+      border:1px solid var(--border);
+      background:var(--card);
+      border-radius:12px;
+      padding:12px;
+    }
+
+    .scene-id{
+      font-size:0.7rem;
+      border:1px solid var(--border);
+      padding:4px 8px;
+      border-radius:999px;
+      margin-bottom:8px;
+      display:inline-block;
+    }
+
+    .scene-title{font-weight:700;margin-bottom:6px;}
+    .scene-sub{color:var(--muted);font-size:0.85rem;margin-bottom:12px;}
+
+    .options{display:grid;gap:10px;}
+
+    .option-btn{
+      border:1px solid var(--border);
+      background:#111;
+      padding:10px;
+      border-radius:12px;
+      text-align:left;
+      cursor:pointer;
+    }
+
+    .option-btn:hover{border-color:var(--border-strong);}
+
+    .option-title{font-weight:700;font-size:0.9rem;}
+    .option-desc{font-size:0.8rem;color:var(--muted);}
+
+    .complete{
+      display:none;
+      text-align:center;
+      border:1px solid rgba(34,197,94,0.2);
+      padding:14px;
+      border-radius:14px;
+    }
+
+    .complete.show{display:block;}
+
+    .code{
+      font-family:"JetBrains Mono";
+      background:#0a0a0a;
+      border:1px solid var(--border);
+      padding:10px;
+      border-radius:10px;
+      display:inline-block;
+      margin:10px 0;
     }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>Coming Soon</h1>
-    <p>This mission is under development. Check back later.</p>
-    <a href="sql.html" class="back-btn">← Go Back</a>
+<div class="container">
+
+  <div class="topbar">
+    <a href="sql.html" class="back-btn">← Back to SQL Missions</a>
+    <div class="tag">INTERMEDIATE+ / ANALYTICS</div>
   </div>
+
+  <div class="hero">
+    <h1>Revenue Report</h1>
+    <p>
+      Manager asks:
+      <strong>"Give me total revenue per month."</strong><br>
+      Your API must return clean aggregated data 📊
+    </p>
+  </div>
+
+  <div class="app">
+
+    <div class="terminal" id="terminalLog">
+Table: orders
+Columns: id, amount, created_at
+
+Need:
+Total revenue grouped by month
+    </div>
+
+    <div id="sceneArea" class="scene">
+      <div class="scene-id" id="sceneId"></div>
+      <div class="scene-title" id="sceneTitle"></div>
+      <div class="scene-sub" id="sceneSub"></div>
+      <div class="options" id="options"></div>
+    </div>
+
+    <div class="complete" id="completeScreen">
+      <h2>📊 Report Ready</h2>
+      <p>You built a real analytics query.</p>
+      <div class="code">
+SELECT MONTH(created_at) AS month,
+SUM(amount) AS total_revenue
+FROM orders
+GROUP BY MONTH(created_at);
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const scenes = {
+  start:{
+    label:"SCENE 1",
+    log:`Current Query:
+SELECT * FROM orders;
+
+Manager unhappy 😐`,
+    title:"What is missing?",
+    sub:"You need aggregation",
+    options:[
+      {title:"Use SUM(amount)",
+       desc:"Calculate total revenue",
+       next:"sum"},
+      {title:"Use ORDER BY",
+       desc:"Sorting only",
+       next:"orderby"},
+      {title:"SELECT amount only",
+       desc:"Still raw data",
+       next:"raw"}
+    ]
+  },
+
+  orderby:{
+    label:"SCENE 2A",
+    log:`Sorted data... still not aggregated`,
+    title:"Sorting ≠ analytics",
+    sub:"Need aggregation",
+    options:[
+      {title:"Use SUM(amount)",desc:"Correct",next:"sum"}
+    ]
+  },
+
+  raw:{
+    label:"SCENE 2B",
+    log:`Still row-level data`,
+    title:"No aggregation done",
+    sub:"Manager needs totals",
+    options:[
+      {title:"Use SUM",desc:"Fix",next:"sum"}
+    ]
+  },
+
+  sum:{
+    label:"SCENE 3",
+    log:`Total revenue calculated`,
+    title:"Good! Now grouping?",
+    sub:"Manager asked per month",
+    options:[
+      {title:"GROUP BY MONTH(created_at)",
+       desc:"Correct grouping",
+       next:"grouped"},
+      {title:"GROUP BY id",
+       desc:"Wrong grouping",
+       next:"wrong_group"}
+    ]
+  },
+
+  wrong_group:{
+    label:"SCENE 4A",
+    log:`Grouped by id → useless`,
+    title:"Wrong dimension",
+    sub:"Need monthly grouping",
+    options:[
+      {title:"GROUP BY MONTH(created_at)",desc:"Fix",next:"grouped"}
+    ]
+  },
+
+  grouped:{
+    complete:true,
+    log:`Monthly revenue calculated successfully 📊`
+  }
+};
+
+function render(id){
+  const s=scenes[id];
+
+  document.getElementById("terminalLog").textContent=s.log;
+
+  if(s.complete){
+    document.getElementById("sceneArea").style.display="none";
+    document.getElementById("completeScreen").classList.add("show");
+    return;
+  }
+
+  document.getElementById("sceneId").textContent=s.label;
+  document.getElementById("sceneTitle").textContent=s.title;
+  document.getElementById("sceneSub").textContent=s.sub;
+
+  const opt=document.getElementById("options");
+  opt.innerHTML="";
+
+  s.options.forEach(o=>{
+    const btn=document.createElement("button");
+    btn.className="option-btn";
+    btn.innerHTML=`<div class="option-title">${o.title}</div>
+                   <div class="option-desc">${o.desc}</div>`;
+    btn.onclick=()=>render(o.next);
+    opt.appendChild(btn);
+  });
+}
+
+render("start");
+</script>
+
 </body>
 </html>

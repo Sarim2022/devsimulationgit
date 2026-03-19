@@ -1,176 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SQL Mission 01 | Dev Simulator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Data Fetch | DEV GAME SIMULATION</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-<style>
-:root{
-  --bg:#050505;
-  --card:#0c0c0c;
-  --border:rgba(255,255,255,0.08);
-  --text:#f5f5f5;
-  --muted:#9ca3af;
-}
+  <style>
+    :root {
+      --bg:#050505;
+      --card:#0c0c0c;
+      --border:rgba(255,255,255,0.08);
+      --border-strong:rgba(255,255,255,0.14);
+      --text:#f5f5f5;
+      --muted:#9ca3af;
+      --green:#22c55e;
+      --red:#ef4444;
+    }
 
-*{margin:0;padding:0;box-sizing:border-box;}
+    *{margin:0;padding:0;box-sizing:border-box;}
 
-body{
-  font-family:Inter,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  padding:20px;
-}
+    body{
+      font-family:'Inter',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:18px;
+    }
 
-.container{max-width:760px;margin:auto;}
+    .container{max-width:760px;margin:auto;}
 
-.back{
-  text-decoration:none;
-  color:var(--muted);
-  border:1px solid var(--border);
-  padding:6px 12px;
-  border-radius:999px;
-}
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:14px;
+    }
 
-.hero{
-  margin:20px 0;
-  padding:16px;
-  border:1px solid var(--border);
-  border-radius:16px;
-  background:#0a0a0a;
-}
+    .back-btn{
+      text-decoration:none;
+      color:var(--muted);
+      border:1px solid var(--border);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:0.8rem;
+    }
 
-.hero h1{margin-bottom:8px;}
-.hero p{color:var(--muted);font-size:0.9rem;}
+    .tag{
+      font-family:"JetBrains Mono";
+      font-size:0.7rem;
+      border:1px solid var(--border);
+      padding:6px 10px;
+      border-radius:999px;
+    }
 
-.box{
-  border:1px solid var(--border);
-  padding:16px;
-  border-radius:16px;
-  background:var(--card);
-}
+    .hero,.app{
+      border:1px solid var(--border);
+      background:#0b0b0b;
+      border-radius:16px;
+      padding:14px;
+      margin-bottom:14px;
+    }
 
-.option{
-  border:1px solid var(--border);
-  padding:12px;
-  border-radius:12px;
-  margin-top:10px;
-  cursor:pointer;
-}
+    .hero h1{font-size:1.5rem;margin-bottom:6px;}
+    .hero p{color:var(--muted);font-size:0.9rem;}
 
-.option:hover{background:#111;}
+    .terminal{
+      font-family:"JetBrains Mono";
+      font-size:0.8rem;
+      background:#080808;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px;
+      margin-bottom:12px;
+      white-space:pre-line;
+    }
 
-.log{
-  font-family:monospace;
-  font-size:0.8rem;
-  background:#080808;
-  padding:10px;
-  border-radius:12px;
-  margin-bottom:12px;
-  color:#d1d5db;
-  white-space:pre-line;
-}
+    .scene{
+      border:1px solid var(--border);
+      background:var(--card);
+      border-radius:12px;
+      padding:12px;
+    }
 
-.complete{
-  display:none;
-  text-align:center;
-  padding:20px;
-}
+    .scene-id{
+      font-size:0.7rem;
+      border:1px solid var(--border);
+      padding:4px 8px;
+      border-radius:999px;
+      margin-bottom:8px;
+      display:inline-block;
+    }
 
-.complete.show{display:block;}
+    .scene-title{font-weight:700;margin-bottom:6px;}
+    .scene-sub{color:var(--muted);font-size:0.85rem;margin-bottom:12px;}
 
-.btn{
-  margin-top:10px;
-  padding:10px 14px;
-  border:1px solid var(--border);
-  background:#111;
-  color:white;
-  border-radius:10px;
-  cursor:pointer;
-}
-</style>
+    .options{display:grid;gap:10px;}
+
+    .option-btn{
+      border:1px solid var(--border);
+      background:#111;
+      padding:10px;
+      border-radius:12px;
+      text-align:left;
+      cursor:pointer;
+    }
+
+    .option-btn:hover{border-color:var(--border-strong);}
+
+    .option-title{font-weight:700;font-size:0.9rem;}
+    .option-desc{font-size:0.8rem;color:var(--muted);}
+
+    .complete{
+      display:none;
+      text-align:center;
+      border:1px solid rgba(34,197,94,0.2);
+      padding:14px;
+      border-radius:14px;
+    }
+
+    .complete.show{display:block;}
+
+    .code{
+      font-family:"JetBrains Mono";
+      background:#0a0a0a;
+      border:1px solid var(--border);
+      padding:10px;
+      border-radius:10px;
+      display:inline-block;
+      margin:10px 0;
+    }
+  </style>
 </head>
 
 <body>
-
 <div class="container">
 
-<a href="sql.html" class="back">← Back</a>
+  <div class="topbar">
+    <a href="sql.html" class="back-btn">← Back to SQL Missions</a>
+    <div class="tag">BEGINNER / QUERY STORY</div>
+  </div>
 
-<div class="hero">
-<h1>SQL Query Broken</h1>
-<p>Your query is not returning data. Fix the mistake and get results.</p>
-</div>
+  <div class="hero">
+    <h1>User Data Fetch</h1>
+    <p>
+      Your backend API is failing. TL says:
+      <strong>"Fetch users above age 18 correctly."</strong>
+      Your query decides everything.
+    </p>
+  </div>
 
-<div class="box">
+  <div class="app">
 
-<div id="log" class="log">
-Table: users
+    <div class="terminal" id="terminalLog">
+API ERROR:
+Incorrect SQL query detected...
+    </div>
 
-id | name   | age
--------------------
-1  | Rahul  | 22
-2  | Aman   | 25
-3  | Sara   | 21
+    <div id="sceneArea" class="scene">
+      <div class="scene-id" id="sceneId"></div>
+      <div class="scene-title" id="sceneTitle"></div>
+      <div class="scene-sub" id="sceneSub"></div>
+      <div class="options" id="options"></div>
+    </div>
 
-Query:
-SELECT name age FROM users;
-❌ Syntax Error
-</div>
+    <div class="complete" id="completeScreen">
+      <h2>✅ Query Fixed</h2>
+      <p>You solved the production issue like a real backend dev.</p>
+      <div class="code">SELECT * FROM users WHERE age > 18;</div>
+    </div>
 
-<div id="question">
-<h3>Fix the query</h3>
-
-<div class="option" onclick="next('wrong1')">
-SELECT name age users;
-</div>
-
-<div class="option" onclick="next('wrong2')">
-SELECT * users;
-</div>
-
-<div class="option" onclick="next('correct')">
-SELECT name, age FROM users;
-</div>
-
-</div>
-
-<div id="complete" class="complete">
-<h2>✅ Mission Complete</h2>
-<p>You fixed the SQL syntax correctly.</p>
-<pre>SELECT name, age FROM users;</pre>
-<button class="btn" onclick="restart()">Play Again</button>
-</div>
-
-</div>
-
+  </div>
 </div>
 
 <script>
-function next(choice){
-  const log = document.getElementById("log");
+const scenes = {
+  start:{
+    label:"SCENE 1",
+    log:`Table: users
+Columns: id, name, age
 
-  if(choice==="wrong1"){
-    log.textContent += "\n❌ Missing FROM keyword!";
+API requires:
+Fetch users above 18`,
+    title:"Write the correct condition",
+    sub:"Pick the correct SQL query",
+    options:[
+      {title:"SELECT * FROM users WHERE age > 18",
+       desc:"Correct condition",
+       next:"correct"},
+      {title:"SELECT * FROM users WHERE age = 18",
+       desc:"Only exact age",
+       next:"wrong_equal"},
+      {title:"SELECT * FROM users WHERE age < 18",
+       desc:"Opposite result",
+       next:"wrong_less"},
+      {title:"SELECT name FROM users",
+       desc:"Missing condition",
+       next:"no_filter"}
+    ]
+  },
+
+  wrong_equal:{
+    label:"SCENE 2A",
+    log:`Result: Only age 18 users returned`,
+    title:"Wrong condition",
+    sub:"You missed users above 18",
+    options:[
+      {title:"Use age > 18",desc:"Fix logic",next:"correct"}
+    ]
+  },
+
+  wrong_less:{
+    label:"SCENE 2B",
+    log:`Result: Underage users returned`,
+    title:"Logic reversed",
+    sub:"This breaks business logic",
+    options:[
+      {title:"Fix to age > 18",desc:"Correct",next:"correct"}
+    ]
+  },
+
+  no_filter:{
+    label:"SCENE 2C",
+    log:`All users returned`,
+    title:"No filtering applied",
+    sub:"Backend needs condition",
+    options:[
+      {title:"Add WHERE age > 18",desc:"Correct",next:"correct"}
+    ]
+  },
+
+  correct:{
+    complete:true,
+    log:`Query executed successfully.
+API working fine.`
+  }
+};
+
+let current="start";
+
+function render(id){
+  const s=scenes[id];
+  current=id;
+
+  document.getElementById("terminalLog").textContent=s.log;
+
+  if(s.complete){
+    document.getElementById("sceneArea").style.display="none";
+    document.getElementById("completeScreen").classList.add("show");
+    return;
   }
 
-  if(choice==="wrong2"){
-    log.textContent += "\n❌ Missing FROM keyword!";
-  }
+  document.getElementById("sceneId").textContent=s.label;
+  document.getElementById("sceneTitle").textContent=s.title;
+  document.getElementById("sceneSub").textContent=s.sub;
 
-  if(choice==="correct"){
-    log.textContent += "\n✅ Query executed successfully!";
-    document.getElementById("question").style.display="none";
-    document.getElementById("complete").classList.add("show");
-  }
+  const opt=document.getElementById("options");
+  opt.innerHTML="";
+
+  s.options.forEach(o=>{
+    const btn=document.createElement("button");
+    btn.className="option-btn";
+    btn.innerHTML=`<div class="option-title">${o.title}</div>
+                   <div class="option-desc">${o.desc}</div>`;
+    btn.onclick=()=>render(o.next);
+    opt.appendChild(btn);
+  });
 }
 
-function restart(){
-  location.reload();
-}
+render("start");
 </script>
 
 </body>

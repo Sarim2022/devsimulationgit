@@ -2,57 +2,298 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coming Soon | DEV GAME SIMULATION</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Slow Query Nightmare | DEV GAME SIMULATION</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #050505;
-      color: #f5f5f5;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    :root {
+      --bg:#050505;
+      --card:#0c0c0c;
+      --border:rgba(255,255,255,0.08);
+      --border-strong:rgba(255,255,255,0.14);
+      --text:#f5f5f5;
+      --muted:#9ca3af;
+      --green:#22c55e;
     }
-    .wrap {
-      text-align: center;
-      padding: 40px 20px;
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+
+    body{
+      font-family:'Inter',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:18px;
     }
-    .wrap h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 14px;
-      color: #e5e7eb;
+
+    .container{max-width:760px;margin:auto;}
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:14px;
     }
-    .wrap p {
-      color: #9ca3af;
-      font-size: 1rem;
-      margin-bottom: 24px;
+
+    .back-btn{
+      text-decoration:none;
+      color:var(--muted);
+      border:1px solid var(--border);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:0.8rem;
     }
-    .back-btn {
-      text-decoration: none;
-      color: #9ca3af;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: #0a0a0a;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 0.88rem;
-      transition: 0.2s ease;
+
+    .tag{
+      font-family:"JetBrains Mono";
+      font-size:0.7rem;
+      border:1px solid var(--border);
+      padding:6px 10px;
+      border-radius:999px;
     }
-    .back-btn:hover {
-      color: #f5f5f5;
-      border-color: rgba(255,255,255,0.14);
+
+    .hero,.app{
+      border:1px solid var(--border);
+      background:#0b0b0b;
+      border-radius:16px;
+      padding:14px;
+      margin-bottom:14px;
+    }
+
+    .hero h1{font-size:1.5rem;margin-bottom:6px;}
+    .hero p{color:var(--muted);font-size:0.9rem;}
+
+    .terminal{
+      font-family:"JetBrains Mono";
+      font-size:0.8rem;
+      background:#080808;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px;
+      margin-bottom:12px;
+      white-space:pre-line;
+    }
+
+    .scene{
+      border:1px solid var(--border);
+      background:var(--card);
+      border-radius:12px;
+      padding:12px;
+    }
+
+    .scene-id{
+      font-size:0.7rem;
+      border:1px solid var(--border);
+      padding:4px 8px;
+      border-radius:999px;
+      margin-bottom:8px;
+      display:inline-block;
+    }
+
+    .scene-title{font-weight:700;margin-bottom:6px;}
+    .scene-sub{color:var(--muted);font-size:0.85rem;margin-bottom:12px;}
+
+    .options{display:grid;gap:10px;}
+
+    .option-btn{
+      border:1px solid var(--border);
+      background:#111;
+      padding:10px;
+      border-radius:12px;
+      text-align:left;
+      cursor:pointer;
+    }
+
+    .option-btn:hover{border-color:var(--border-strong);}
+
+    .option-title{font-weight:700;font-size:0.9rem;}
+    .option-desc{font-size:0.8rem;color:var(--muted);}
+
+    .complete{
+      display:none;
+      text-align:center;
+      border:1px solid rgba(34,197,94,0.2);
+      padding:14px;
+      border-radius:14px;
+    }
+
+    .complete.show{display:block;}
+
+    .code{
+      font-family:"JetBrains Mono";
+      background:#0a0a0a;
+      border:1px solid var(--border);
+      padding:10px;
+      border-radius:10px;
+      display:inline-block;
+      margin:10px 0;
     }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>Coming Soon</h1>
-    <p>This mission is under development. Check back later.</p>
-    <a href="sql.html" class="back-btn">← Go Back</a>
+<div class="container">
+
+  <div class="topbar">
+    <a href="sql.html" class="back-btn">← Back to SQL Missions</a>
+    <div class="tag">INTERMEDIATE / PERFORMANCE</div>
   </div>
+
+  <div class="hero">
+    <h1>Slow Query Nightmare</h1>
+    <p>
+      Your app is taking **5+ seconds** to load data 😵  
+      TL says:
+      <strong>"Optimize the query. This can't go to production."</strong>
+    </p>
+  </div>
+
+  <div class="app">
+
+    <div class="terminal" id="terminalLog">
+Query:
+SELECT * FROM orders;
+
+Rows: 10,00,000+
+Time: 5.2 sec ⚠️
+    </div>
+
+    <div id="sceneArea" class="scene">
+      <div class="scene-id" id="sceneId"></div>
+      <div class="scene-title" id="sceneTitle"></div>
+      <div class="scene-sub" id="sceneSub"></div>
+      <div class="options" id="options"></div>
+    </div>
+
+    <div class="complete" id="completeScreen">
+      <h2>⚡ Query Optimized</h2>
+      <p>You reduced execution time like a real backend engineer.</p>
+      <div class="code">
+SELECT * FROM orders WHERE user_id = 101;
+
+-- + Add INDEX on user_id
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const scenes = {
+  start:{
+    label:"SCENE 1",
+    log:`Full table scan detected...
+Huge dataset causing delay`,
+    title:"What's the main issue?",
+    sub:"Pick best optimization",
+    options:[
+      {title:"Add WHERE condition",
+       desc:"Filter data early",
+       next:"filter"},
+      {title:"Keep query same",
+       desc:"No improvement",
+       next:"no_change"},
+      {title:"Use ORDER BY",
+       desc:"Sorting doesn't reduce load",
+       next:"orderby"},
+      {title:"Restart server",
+       desc:"Not a real fix",
+       next:"restart"}
+    ]
+  },
+
+  no_change:{
+    label:"SCENE 2A",
+    log:`Still slow...`,
+    title:"No optimization done",
+    sub:"You must reduce data scanned",
+    options:[
+      {title:"Add WHERE filter",desc:"Correct",next:"filter"}
+    ]
+  },
+
+  orderby:{
+    label:"SCENE 2B",
+    log:`Query sorted... still slow`,
+    title:"Sorting ≠ optimization",
+    sub:"You need filtering/indexing",
+    options:[
+      {title:"Add WHERE",desc:"Fix",next:"filter"}
+    ]
+  },
+
+  restart:{
+    label:"SCENE 2C",
+    log:`Server restarted... still slow`,
+    title:"Temporary illusion",
+    sub:"Problem is query design",
+    options:[
+      {title:"Add WHERE",desc:"Fix query",next:"filter"}
+    ]
+  },
+
+  filter:{
+    label:"SCENE 3",
+    log:`Filtered rows reduced significantly`,
+    title:"Good! Query improved",
+    sub:"Now how to make it even faster?",
+    options:[
+      {title:"Add INDEX on user_id",
+       desc:"Speeds lookup",
+       next:"indexed"},
+      {title:"Use DISTINCT",
+       desc:"Not needed here",
+       next:"wrong_distinct"}
+    ]
+  },
+
+  wrong_distinct:{
+    label:"SCENE 4A",
+    log:`Distinct applied... but still slow`,
+    title:"Wrong optimization",
+    sub:"Focus on lookup speed",
+    options:[
+      {title:"Add INDEX",desc:"Correct",next:"indexed"}
+    ]
+  },
+
+  indexed:{
+    complete:true,
+    log:`Index created.
+Query time: 0.02 sec ⚡`
+  }
+};
+
+function render(id){
+  const s=scenes[id];
+
+  document.getElementById("terminalLog").textContent=s.log;
+
+  if(s.complete){
+    document.getElementById("sceneArea").style.display="none";
+    document.getElementById("completeScreen").classList.add("show");
+    return;
+  }
+
+  document.getElementById("sceneId").textContent=s.label;
+  document.getElementById("sceneTitle").textContent=s.title;
+  document.getElementById("sceneSub").textContent=s.sub;
+
+  const opt=document.getElementById("options");
+  opt.innerHTML="";
+
+  s.options.forEach(o=>{
+    const btn=document.createElement("button");
+    btn.className="option-btn";
+    btn.innerHTML=`<div class="option-title">${o.title}</div>
+                   <div class="option-desc">${o.desc}</div>`;
+    btn.onclick=()=>render(o.next);
+    opt.appendChild(btn);
+  });
+}
+
+render("start");
+</script>
+
 </body>
 </html>
